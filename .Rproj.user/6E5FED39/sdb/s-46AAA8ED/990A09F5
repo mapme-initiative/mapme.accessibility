@@ -1,14 +1,14 @@
 {
     "collab_server" : "",
-    "contents" : "#' @title test\n#'\n#' @description This is just a little test for developing packages in R\n#'\n#' @param my_testobject\n#'\n#' @return NULL\n#'\n#' @examples NULL\n#'\n#' @export my_function\n#'\n\nmy_function<-function(my_testobject=\"Javier\"){print(paste(my_testobject,\"is a litte rat!\"))}\n",
+    "contents" : "#' @title test\n#'\n#' @description This is just a little test for developing packages in R\n#'\n#' @param my_testobject\n#'\n#' @return NULL\n#'\n#' @examples NULL\n#'\n#' @export my_function\n#'\n\nmy_function<-function(my_testobject=\"Javier\"){print(paste(my_testobject,\"is a litte rat!\"))}\n\n\n",
     "created" : 1550235514445.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3996323655",
+    "hash" : "1952725259",
     "id" : "990A09F5",
-    "lastKnownWriteTime" : 1550236307,
-    "last_content_update" : 1550236307240,
+    "lastKnownWriteTime" : 1550237168,
+    "last_content_update" : 1550237168367,
     "path" : "~/R/R-projects/3_accessibility/git/AccessibilityTest/R/test.R",
     "project_path" : "R/test.R",
     "properties" : {
