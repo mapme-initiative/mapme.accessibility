@@ -12,3 +12,5 @@
 #'
 
 my_function<-function(my_testobject="Javier"){print(paste(my_testobject,"is a litte rat!"))}
+
+
