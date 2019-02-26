@@ -2,9 +2,9 @@ Package: AccessibilityTest
 Type: Package
 Title: Just a little Test package for our repo
 Version: 0.1.0
-Author: Johannes Schielein
-Maintainer: Johannes Schielein <johannes.schielein@uni-bonn.de>
-Description: this is just a test
+Author: Johannes Schielein, Gabriel Frey and Javier miranda
+Maintainer: Johannes Schielein <accessibilitychief@gmail.com>
+Description: The accessibility package is ment to provide some comprehensive wrapper function to create accessibility maps in R
 License: MIT
 Encoding: UTF-8
 LazyData: true
