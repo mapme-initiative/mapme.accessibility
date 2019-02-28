@@ -11,7 +11,7 @@
 #' @param my_speedfield
 #' @param my_outputpath
 #'
-#' @return r.tmp
+#' @return tmp_raster
 #'
 #' @examples NULL
 #'
