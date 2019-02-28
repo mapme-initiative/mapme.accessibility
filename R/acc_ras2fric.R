@@ -116,22 +116,17 @@ acc_ras2fric <-
                 tmp_raster<-raster(paste(my_outputpath,
                                   my_outputname,
                                   "_reclass.tif", sep =""))
-                print(paste("Done processing. Result saved as ",my_outputpath,
-                                                                my_outputname,
-                                                                "_reclass.tif", sep =""))
+                print("Done processing.")
               }else{
                 # reclassificationa and rescale
                 if(tmp.confirmation=="Reclass and Rescale"){
                   tmp_raster<-raster(paste(my_outputpath,
                                            my_outputname,
                                            ".tif", sep =""))
-                  print(paste("Done processing. Result saved as ",
-                              my_outputpath,
-                              my_outputname,
-                              ".tif", sep =""))
+                  print("Done processing.")
                 }else{
                   tmp_raster<-NULL
-                  print("nothing really done")
+                  print("Nothing really done")
                 }
               }
               return(tmp_raster)

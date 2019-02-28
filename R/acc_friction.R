@@ -70,6 +70,8 @@ acc_frition <- function(friction_input_1,
         cutline = masklayer_path,
         crop_to_cutline = mask,
         co = c("COMPRESS=LZW"),
+        s_srs = proj4string(tmp_friction),
+        t_srs = tmp_proj,
         dstnodata = -9999
       )
       # create traveltimes per cell
