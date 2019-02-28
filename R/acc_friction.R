@@ -71,11 +71,10 @@ acc_frition <- function(friction_input_1,
       # create traveltimes in seconds to cross one cell
       tmp_friction <-
         raster(paste(my_filepath,my_filename, "_projected.tif", sep = ""))
-      tmp_cellsize <- my_outputresolution / 1000
       tmp_friction <-
         raster::calc(tmp_friction,
              function(x) {
-               (3600*tmp_cellsize/1000)/x
+               my_outputresolution/((x*1000)/3600)
              },
              filename = paste(my_filepath,my_filename, "_projected_traveltimes.tif", sep =
                                 ""),
