@@ -66,19 +66,19 @@ acc_ras2fric <-
                   include.lowest = T,
                   filename = paste(my_outputpath,
                                    my_outputname,
-                                   "reclass.tif", sep =""),
+                                   "_reclass.tif", sep =""),
                   datatype = "INT1U",
                   options = c("COMPRESS=LZW"))
                 # print output
                 print(paste("reclassified raster saved as ",paste(my_outputpath,
                                                                     my_outputname,
-                                                                    "reclass.tif", sep =""),". It can be safely removed afterwards"))
+                                                                    "_reclass.tif", sep =""),". It can be safely removed afterwards"))
                   # rescale the raster if resolution and or extent differs
                 if(res(tmp_raster)!=res(my_baselayer)&&extent(tmp_raster)!=extent(my_baselayer)){
                   print("Starting to rescale and aling the raster")
                   gdalwarp(srcfile = paste(my_outputpath,
                                            my_outputname,
-                                           "reclass.tif", sep =""),
+                                           "_reclass.tif", sep =""),
                            dstfile = paste(my_outputpath,
                                            my_outputname,
                                            ".tif", sep =""),
@@ -116,9 +116,9 @@ acc_ras2fric <-
                 tmp_raster<-raster(paste(my_outputpath,
                                   my_outputname,
                                   "reclass.tif", sep =""))
-                print("Done processing. Result saved as ",paste(my_outputpath,
+                print(paste("Done processing. Result saved as ",my_outputpath,
                                                                 my_outputname,
-                                                                "reclass.tif", sep =""))
+                                                                "_reclass.tif", sep =""))
               }else{
                 # reclassificationa and rescale
                 if(tmp.confirmation=="Reclass and Rescale"){
