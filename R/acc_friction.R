@@ -7,11 +7,10 @@
 #' @param friction_input_2
 #' @param ...
 #' @param my_filename
+#' @param my_filepath
 #' @param my_outputresolution
 #' @param getproj
 #' @param my_proj
-#' @param mask
-#' @param masklayer_path
 #'
 #' @return tmp_friction
 #'
@@ -25,6 +24,7 @@
 acc_frition <- function(friction_input_1,
                         friction_input_2,
                         ...,
+                        my_filepath,
                         my_filename,
                         my_outputresolution,
                         getproj = TRUE,
@@ -47,7 +47,7 @@ acc_frition <- function(friction_input_1,
         indices = rep(1, length(tmp_stack@layers)),
         # one element in "indices" for each input layer
         fun = max,
-        filename = my_filename,
+        filename = paste(my_filepath,my_filename,".tif",sep=""),
         datatype = "INT1U",
         options = c("COMPRESS=LZW")
       )
@@ -59,7 +59,7 @@ acc_frition <- function(friction_input_1,
       }
       gdalUtils::gdalwarp(
         srcfile = my_filename,
-        dstfile = paste(my_filename, "_projected.tif", sep = ""),
+        dstfile = paste(my_filepath,my_filename, "_projected.tif", sep = ""),
         of = "GTiff",
         ot = "Byte",
         tr = c(my_outputresolution, my_outputresolution),
@@ -68,18 +68,18 @@ acc_frition <- function(friction_input_1,
         t_srs = tmp_proj,
         dstnodata = -9999
       )
-      # create traveltimes in minutes to cross one cell
+      # create traveltimes in seconds to cross one cell
       tmp_friction <-
-        raster(paste(my_filename, "_projected.tif", sep = ""))
+        raster(paste(my_filepath,my_filename, "_projected.tif", sep = ""))
       tmp_cellsize <- my_outputresolution / 1000
       tmp_friction <-
         raster::calc(tmp_friction,
              function(x) {
-               tmp_cellsize / (x*1000/3600)
+               tmp_cellsize / (x*1000)
              },
-             filename = paste(my_filename, "_projected_traveltimes.tif", sep =
+             filename = paste(my_filepath,my_filename, "_projected_traveltimes.tif", sep =
                                 ""),
-             datatype = "FLT4S",
+             datatype = "INT4U",
              options = c("COMPRESS=LZW"))
       return(tmp_friction)
     }
