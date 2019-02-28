@@ -58,7 +58,7 @@ acc_frition <- function(friction_input_1,
         tmp_proj <- my_proj
       }
       gdalUtils::gdalwarp(
-        srcfile = my_filename,
+        srcfile = paste(my_filepath,my_filename,".tif")
         dstfile = paste(my_filepath,my_filename, "_projected.tif", sep = ""),
         of = "GTiff",
         ot = "Byte",
