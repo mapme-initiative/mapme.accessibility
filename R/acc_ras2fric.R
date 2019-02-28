@@ -115,7 +115,7 @@ acc_ras2fric <-
               if(tmp.confirmation=="Reclass"){
                 tmp_raster<-raster(paste(my_outputpath,
                                   my_outputname,
-                                  "reclass.tif", sep =""))
+                                  "_reclass.tif", sep =""))
                 print(paste("Done processing. Result saved as ",my_outputpath,
                                                                 my_outputname,
                                                                 "_reclass.tif", sep =""))
@@ -125,7 +125,8 @@ acc_ras2fric <-
                   tmp_raster<-raster(paste(my_outputpath,
                                            my_outputname,
                                            ".tif", sep =""))
-                  print(paste(my_outputpath,
+                  print(paste("Done processing. Result saved as ",
+                              my_outputpath,
                               my_outputname,
                               ".tif", sep =""))
                 }else{
