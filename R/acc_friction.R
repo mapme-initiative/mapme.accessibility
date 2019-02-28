@@ -28,9 +28,7 @@ acc_frition <- function(friction_input_1,
                         my_filename,
                         my_outputresolution,
                         getproj = TRUE,
-                        my_proj = NULL,
-                        mask = FALSE,
-                        masklayer_path = NULL) {
+                        my_proj = NULL) {
   if (is.element("raster", installed.packages()[, 1]) == F) {
     print("You do not have 'raster' installed. Please install the package before proceeding")
   } else{
@@ -65,10 +63,6 @@ acc_frition <- function(friction_input_1,
         of = "GTiff",
         ot = "Byte",
         tr = c(my_outputresolution, my_outputresolution),
-        te = paste(extent(tmp_friction)[c(1, 3, 2, 4)], collapse =
-                     " "),
-        cutline = masklayer_path,
-        crop_to_cutline = mask,
         co = c("COMPRESS=LZW"),
         s_srs = proj4string(tmp_friction),
         t_srs = tmp_proj,
