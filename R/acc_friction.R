@@ -75,7 +75,7 @@ acc_frition <- function(friction_input_1,
       tmp_friction <-
         raster::calc(tmp_friction,
              function(x) {
-               (3600*tmp_cellsize/1000)/x
+               tmp_cellsize/((x*1000)/3600)
              },
              filename = paste(my_filepath,my_filename, "_projected_traveltimes.tif", sep =
                                 ""),
