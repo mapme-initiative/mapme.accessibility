@@ -46,24 +46,18 @@ acc_radians <- function(my_input_dem,
         overwrite = F
       )
       print("Start processing: Create slope map (raster)")
-      terrain(x =raster(paste(output_dir, "/dem_homogenized.tif", sep = "")),
-              opt = "slope",
-              unit = "degrees",
-              filename=paste(output_dir, "/slope.tif", sep = ""))
-      print("Start processing: Create radians from slope (raster)")
       tmp_radians <-
-        raster(paste(output_dir, "/slope.tif", sep = "")) * (pi / 180)
-      if (save_results == T) {
-        writeRaster(
-          x = tmp_radians,
-          filename = paste(my_outputpath, "/radians.tif", sep =
-                             ""),
-          datatype = "FLT4S"
+        terrain(
+          x = raster(paste(
+            output_dir, "/dem_homogenized.tif", sep = ""
+          )),
+          opt = "slope",
+          unit = "radians",
+          filename = paste(output_dir, "/radians.tif", sep = "")
         )
-      }
-      print("Finished processing")
-      return(tmp_radians)
-
     }
+    print("Finished processing")
+    return(tmp_radians)
+
   }
 }
