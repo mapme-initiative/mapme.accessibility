@@ -52,12 +52,12 @@ acc_accessibility <-
           )
           # Import friction raster to GRASS
           writeRaster(x = my_friction,
-                      filename = paste(tempdir(), "/friction.tif"))
+                      filename = paste(tempdir(), "/friction.tif",sep=""))
           execGRASS(
             "r.in.gdal",
             flags = c("overwrite", "o"),
             parameters = list(
-              input = paste(tempdir(), "/friction.tif"),
+              input = paste(tempdir(), "/friction.tif",sep=""),
               output = "friction"
             )
           )
@@ -130,12 +130,12 @@ acc_accessibility <-
             flags = "overwrite",
             parameters = list(
               input = "accessibility",
-              output = paste(tempdir(), "accessibility.tif", sep =
+              output = paste(tempdir(), "/accessibility.tif", sep =
                                "")
             )
           )
           tmp_accessibiltiy <-
-            raster(paste(tempdir(), "accessibility.tif", sep = ""))
+            raster(paste(tempdir(), "/accessibility.tif", sep = ""))
           return(tmp_accessibiltiy)
         }
 
