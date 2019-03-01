@@ -29,7 +29,7 @@ acc_radians <- function(my_input_dem,
         "You do not have 'galUtils' installed. Please install the package before proceeding"
       )
     } else{
-      print("Start processing: (1) Homogenize slope layer with baselayer")
+      print("Start Processing: Homogenize slope layer with baselayer")
       if(save_results==TRUE){output_dir<-my_outputpath}else{output_dir<-tempdir()}
       gdalUtils::gdalwarp(
         srcfile = my_input_dem,
@@ -41,15 +41,16 @@ acc_radians <- function(my_input_dem,
         ot = "Byte",
         overwrite = F
       )
-
+      print("Start processing: Create slope map (gdal)")
       gdalUtils::gdaldem(
         mode = "slope",
-        input_dem = paste(output_dir, "dem_homogenized.tif", sep = ""),
-        output =  paste(output_dir, "slope.tif", sep = ""),
+        input_dem = paste(output_dir, "/dem_homogenized.tif", sep = ""),
+        output =  paste(output_dir, "/slope.tif", sep = ""),
         alg = my_radians_alg
       )
+      print("Start processing: Create radians from slope")
       tmp_radians <-
-        raster(paste(output_dir, "slope.tif", sep = "")) * (pi / 180)
+        raster(paste(output_dir, "/slope.tif", sep = "")) * (pi / 180)
       print("Finished processing")
       return(tmp_radians)
 
