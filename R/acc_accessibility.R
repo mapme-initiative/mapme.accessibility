@@ -122,8 +122,7 @@ acc_accessibility <-
               )
             )
           }
-          print(paste("Stopped to calculate accessiblity map at:"),
-                Sys.time())
+          print(paste("Stopped to calculate accessiblity map at:",Sys.time()))
           # Export raster as tif
           execGRASS(
             "r.out.gdal",
