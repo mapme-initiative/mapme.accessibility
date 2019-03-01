@@ -7,6 +7,7 @@
 #' @param my_outputpath
 #' @param my_baselayer
 #' @param my_radians_alg
+#' @param save_results
 #'
 #' @return tmp_radians
 #'

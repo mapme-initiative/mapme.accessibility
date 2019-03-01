@@ -5,6 +5,8 @@
 #'
 #' @param my_radians
 #' @param my_input
+#' @param my_output
+#' @param save_results
 #'
 #' @return tmp_slopecorr
 #'
