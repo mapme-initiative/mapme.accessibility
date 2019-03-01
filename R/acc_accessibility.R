@@ -95,8 +95,7 @@ acc_accessibility <-
             )
           )
           # calculate accessibility
-          print(paste("Starting to calculate accessiblity map at:"),
-                Sys.time())
+          print(paste("Starting to calculate accessiblity map at:",Sys.time()))
           if (knightsmove == TRUE) {
             execGRASS(
               "r.cost",
