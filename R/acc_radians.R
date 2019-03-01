@@ -16,9 +16,10 @@
 #'
 
 acc_radians <- function(my_input_dem,
-                        my_outputpath,
                         my_baselayer,
-                        my_radians_alg = "ZevenbergenThorne"){
+                        my_radians_alg = "ZevenbergenThorne",
+                        my_outputpath=NULL,
+                        save_results=FALSE){
   if (is.element("raster", installed.packages()[, 1]) == F) {
     print("You do not have 'raster' installed. Please install the package before proceeding")
   } else{
@@ -28,9 +29,10 @@ acc_radians <- function(my_input_dem,
       )
     } else{
       print("Start processing: (1) Homogenize slope layer with baselayer")
+      if(save_results==TRUE){output_dir<-my_outputpath}else{output_dir<-tempdir()}
       gdalUtils::gdalwarp(
         srcfile = my_input_dem,
-        dstfile = paste(my_outputpath, "dem_homogenized.tif", sep = ""),
+        dstfile = paste(output_dir, "/dem_homogenized.tif", sep = ""),
         tr = res(my_baselayer),
         te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                      " "),
@@ -41,20 +43,12 @@ acc_radians <- function(my_input_dem,
 
       gdalUtils::gdaldem(
         mode = "slope",
-        input_dem = paste(my_outputpath, "dem_homogenized.tif", sep = ""),
-        output =  paste(my_outputpath, "slope.tif", sep = ""),
+        input_dem = paste(output_dir, "dem_homogenized.tif", sep = ""),
+        output =  paste(output_dir, "slope.tif", sep = ""),
         alg = my_radians_alg
       )
-      print(
-        paste(
-          "Saved homogenized DEM and slope in:",
-          my_outputpath,
-          ".Can be removed afterwards. Starting now to calculate radians",
-          sep = ""
-        )
-      )
       tmp_radians <-
-        raster(paste(my_outputpath, "slope.tif", sep = "")) * (pi / 180)
+        raster(paste(output_dir, "slope.tif", sep = "")) * (pi / 180)
       print("Finished processing")
       return(tmp_radians)
 
