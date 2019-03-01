@@ -45,13 +45,11 @@ acc_radians <- function(my_input_dem,
         ot = "UInt32",
         overwrite = F
       )
-      print("Start processing: Create slope map (gdal)")
-      gdalUtils::gdaldem(
-        mode = "slope",
-        input_dem = paste(output_dir, "/dem_homogenized.tif", sep = ""),
-        output =  paste(output_dir, "/slope.tif", sep = ""),
-        alg = my_slope_alg
-      )
+      print("Start processing: Create slope map (raster)")
+      terrain(x =raster(paste(output_dir, "/dem_homogenized.tif", sep = "")),
+              opt = "slope",
+              unit = "degrees",
+              filename=paste(output_dir, "/slope.tif", sep = ""))
       print("Start processing: Create radians from slope (raster)")
       tmp_radians <-
         raster(paste(output_dir, "/slope.tif", sep = "")) * (pi / 180)
