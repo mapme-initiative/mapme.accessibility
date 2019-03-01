@@ -27,7 +27,7 @@ acc_slopecorr <- function(my_input,
     tmp_stack <- stack(my_input, my_radians)
     tmp_slopecorr <-
       tmp_stack[[1]] * (exp(-3 * tan(tmp_stack[[2]])))
-    ifelse(save_results == TRUE) {
+    if(save_results == TRUE) {
       writeRaster(x = tmp_slopecorr,
                   filename = my_output,
                   datatype = "FLT4S")
