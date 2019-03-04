@@ -1,10 +1,11 @@
-Package: AccessibilityTest
+Package: AccessibilityMaps
 Type: Package
-Title: Just a little Test package for our repo
+Title: Creation of Accessibility Maps in R
 Version: 0.1.0
-Author: Johannes Schielein, Gabriel Frey and Javier miranda
+Author: Johannes Schielein, Gabriel Frey, Javier miranda
 Maintainer: Johannes Schielein <accessibilitychief@gmail.com>
-Description: The accessibility package is ment to provide some comprehensive wrapper function to create accessibility maps in R
+Depends: R (>= 2.15.0), raster, rgdal, gdalUtils, rgrass7, sp
+Description: The AccessibilityMaps package provides comprehensive wrapper function to create accessibility or so called travel-times maps in R
 License: MIT
 Encoding: UTF-8
 LazyData: true
