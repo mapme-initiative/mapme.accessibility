@@ -3,10 +3,8 @@
 #'
 #' @description Function to correct friction base data for slope effects
 #'
-#' @param my_radians
 #' @param my_input
-#' @param my_output
-#' @param save_results
+#' @param my_radians
 #'
 #' @return tmp_slopecorr
 #'
@@ -17,21 +15,25 @@
 
 # define function
 acc_slopecorr <- function(my_input,
-                          my_radians,
-                          my_output = NULL,
-                          save_results = FALSE)
+                          my_radians)
 {
-  if (is.element("raster", installed.packages()[, 1]) == F) {
-    print("You do not have 'raster' installed. Please install the package before proceeding")
-  } else{
-    tmp_stack <- stack(my_input, my_radians)
-    tmp_slopecorr <-
-      tmp_stack[[1]] * (exp(-3 * tan(tmp_stack[[2]])))
-    if(save_results == TRUE) {
-      writeRaster(x = tmp_slopecorr,
-                  filename = my_output,
-                  datatype = "FLT4S")
-    }
-    return(tmp_slopecorr)
+  # check for correct definition of input variables
+  if (!inherits(my_input, c("RasterLayer"))) {
+    stop('Please provide "my_input" as an object of Class RasterLayer.',
+         call. = F)
   }
+  if (!inherits(my_radians, c("RasterLayer"))) {
+    stop('Please provide "my_radians" as an object of Class RasterLayer.',
+         call. = F)
+  }
+  if (res(my_input) != res(my_radians) |
+         extent(my_input) != extent(my_radians)) {
+    stop('Extend and/or resolution of "input_data" and "my_radians" differ. Please homogenize before processing',
+         call. = F)
+  }
+  # start processing
+  tmp_stack <- raster::stack(my_input, my_radians)
+  tmp_slopecorr <-
+    tmp_stack[[1]] * (exp(-3 * tan(tmp_stack[[2]])))
+  return(tmp_slopecorr)
 }

@@ -3,10 +3,10 @@
 #'
 #' @description Function to calculate radians from an elevation dataset
 #'
-#' @param my_input_dem
-#' @param my_outputpath
+#' @param my_input
 #' @param my_baselayer
-#' @param my_radians_alg
+#'
+#' @param my_slope_alg
 #' @param save_results
 #'
 #' @return tmp_radians
@@ -16,48 +16,43 @@
 #' @export acc_radians
 #'
 
-acc_radians <- function(my_input_dem,
-                        my_baselayer,
-                        my_slope_alg = "ZevenbergenThorne",
-                        my_outputpath = NULL,
-                        save_results = FALSE) {
-  if (is.element("raster", installed.packages()[, 1]) == F) {
-    print("You do not have 'raster' installed. Please install the package before proceeding")
-  } else{
-    if (is.element("gdalUtils", installed.packages()[, 1]) == F) {
-      print(
-        "You do not have 'galUtils' installed. Please install the package before proceeding"
-      )
-    } else{
-      print("Start Processing: Homogenize DEM layer with baselayer (gdal)")
-      if (save_results == TRUE) {
-        output_dir <- my_outputpath
-      } else{
-        output_dir <- tempdir()
-      }
-      gdalUtils::gdalwarp(
-        srcfile = my_input_dem,
-        dstfile = paste(output_dir, "/dem_homogenized.tif", sep = ""),
-        tr = res(my_baselayer),
-        te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
-                     " "),
-        r = "max",
-        ot = "UInt32",
-        overwrite = F
-      )
-      print("Start processing: Create slope map (raster)")
-      tmp_radians <-
-        terrain(
-          x = raster(paste(
-            output_dir, "/dem_homogenized.tif", sep = ""
-          )),
-          opt = "slope",
-          unit = "radians",
-          filename = paste(output_dir, "/radians.tif", sep = "")
-        )
-    }
-    print("Finished processing")
-    return(tmp_radians)
-
+acc_radians <- function(my_input,
+                        my_baselayer) {
+  # check for correct definition of input variables
+  if (!inherits(my_input, c("RasterLayer"))) {
+    stop('Please provide "my_input" as an object of Class RasterLayer.',
+         call. = F)
   }
+  if (!inherits(my_radians, c("RasterLayer"))) {
+    stop('Please provide "my_radians" as an object of Class RasterLayer.',
+         call. = F)
+  }
+  # homogenized DEM layer if it differs from the baselayer
+  if (raster::res(my_input) != raster::res(my_baselayer) |
+      raster::extent(my_input) != raster::extent(my_baselayer)) {
+  print("Homogenize DEM layer with baselayer (gdal)")
+  gdalUtils::gdalwarp(
+    srcfile = my_input,
+    dstfile = paste(tempdir(), "/dem_homogenized.tif", sep = ""),
+    tr = res(my_baselayer),
+    te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
+                 " "),
+    r = "mode",
+    ot = "UInt32",
+    overwrite = F
+  )
+  }else{raster::writeRaster(my_input,paste(tempdir(), "/dem_homogenized.tif", sep = ""))}
+  print("Create slope map (raster)")
+  tmp_radians <-
+    terrain(
+      x = raster(paste(
+        tempdir(), "/dem_homogenized.tif", sep = ""
+      )),
+      opt = "slope",
+      unit = "radians",
+      filename = paste(tempdir(), "/radians.tif", sep = "")
+    )
+  print("Finished processing")
+  return(tmp_radians)
+  unlink(c(paste(tempdir, "/dem_homogenized.tif", sep =""),paste(tempdir, "/radians.tif", sep ="")))
 }

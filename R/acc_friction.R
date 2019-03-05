@@ -3,11 +3,7 @@
 #'
 #' @description Function to create a friction surface
 #'
-#' @param friction_input_1
-#' @param friction_input_2
-#' @param ...
-#' @param my_filename
-#' @param my_filepath
+#' @param my_friction_layer_list
 #' @param my_outputresolution
 #' @param getproj
 #' @param my_proj
@@ -23,117 +19,89 @@
 
 
 # define function
-acc_frition <- function(friction_input_1,
-                        friction_input_2,
-                        ...,
-                        my_filepath,
-                        my_filename,
+acc_frition <- function(my_friction_layer_list,
                         my_outputresolution,
                         getproj = TRUE,
                         my_proj = NULL,
-                        cropfriction = F,
+                        cropfriction = FALSE,
                         my_croplayer = NULL) {
-  if (is.element("raster", installed.packages()[, 1]) == F) {
-    print("You do not have 'raster' installed. Please install the package before proceeding")
-  } else{
-    if (is.element("gdalUtils", installed.packages()[, 1]) == F) {
-      print(
-        "You do not have 'galUtils' installed. Please install the package before proceeding"
-      )
-    } else{
-      if (is.element("sp", installed.packages()[, 1]) == F) {
-        print("You do not have 'sp' installed. Please install the package before proceeding")
-      }
-      else{
-        library(raster)
-        library(gdalUtils)
-        library(sp)
-        # stack the layers
-        tmp_stack <- stack(friction_input_1, friction_input_2, ...)
-        # take max
-        tmp_friction <- stackApply(
-          tmp_stack,
-          indices = rep(1, length(tmp_stack@layers)),
-          # one element in "indices" for each input layer
-          fun = max,
-          filename = paste(my_filepath, my_filename, ".tif", sep = ""),
-          datatype = "INT1U",
-          options = c("COMPRESS=LZW")
-        )
-        # project the raster
-        if (getproj == TRUE) {
-          tmp_proj <- acc_areaproj(tmp_friction)
-        } else{
-          tmp_proj <- my_proj
-        }
-        gdalUtils::gdalwarp(
-          srcfile = paste(my_filepath, my_filename, ".tif", sep = ""),
-          dstfile = paste(my_filepath, my_filename, "_projected.tif", sep = ""),
-          of = "GTiff",
-          ot = "Byte",
-          tr = c(my_outputresolution, my_outputresolution),
-          co = c("COMPRESS=LZW"),
-          s_srs = proj4string(tmp_friction),
-          t_srs = tmp_proj,
-          dstnodata = -9999
-        )
-        # create traveltimes in seconds to cross one cell
-        tmp_friction <-
-          raster(paste(my_filepath, my_filename, "_projected.tif", sep = ""))
-        tmp_friction <-
-          raster::calc(tmp_friction,
-                       function(x) {
-                         my_outputresolution / ((x * 1000) / 3600)
-                       },
-                       filename = paste(
-                         my_filepath,
-                         my_filename,
-                         "_projected_traveltimes.tif",
-                         sep =
-                           ""
-                       ),
-                       datatype = "INT4U",
-                       options = c("COMPRESS=LZW"))
-        # if user decides to crop the friction layer, crop it
-        if (cropfriction == TRUE) {
-          # (1) reproject the crop layer to match PCS
-          tmp_croplayer <-
-            spTransform(my_croplayer, CRSobj = CRS(proj4string(tmp_friction)))
-          writeOGR(
-            obj = tmp_croplayer,
-            dsn = my_filepath,
-            layer = "croplayer_reproject",
-            "ESRI Shapefile"
-          )
-          # (2) crop
-          gdalwarp(
-            srcfile = paste(
-              my_filepath,
-              my_filename,
-              "_projected_traveltimes.tif",
-              sep =
-                ""
-            ),
-            dstfile = paste(
-              my_filepath,
-              "_projected_traveltimes_masked.tif",
-              sep = ""
-            ),
-            cutline = paste(my_filepath, "croplayer_reproject.shp", sep =
-                              ""),
-            crop_to_cutline = TRUE,
-            co = c("COMPRESS=LZW"),
-            dstnodata = -9999
-          )
-          tmp_friction <- raster(paste(
-            my_filepath,
-            "_projected_traveltimes_masked.tif",
-            sep = ""
-          ))
-        }
-
-        return(tmp_friction)
-      }
-    }
+  # check for correct definition of input variables
+  if (!inherits(my_friction_layer_list, c("list"))) {
+    stop('Please provide "my_friction_layer_list" as an object of Class "list".',
+         call. = F)
   }
+  if (getproj==FALSE|!is.null(my_proj)&!inherits(my_proj, c("character"))) {
+    stop('You decided to provide a projection system. Please provide "my_proj" as an object of Class "character" containing a valid proj4string definition.',
+         call. = F)
+  }
+  if (getproj==FALSE&!is.null(my_proj)) {
+    stop('You decided to provide a custom projection system. Please set "getproj" to FALSE',
+         call. = F)
+  }
+  if (cropfriction==TRUE|!is.null(my_croplayer)&!inherits(my_proj, c("SpatialPolygonsDataFrame"))) {
+    stop('You decided to provide a layer to crop your data. Please provide "my_croplayer" as an object of Class "SpatialPolygonsDataFrame".',
+         call. = F)
+  }
+  if (!is.null(my_croplayer)&cropfriction==FALSE) {
+    stop('You decided to provide a layer to crop your data. Please set cropfriction = TRUE to proceed',
+         call. = F)
+  }
+  # stack the layers
+  tmp_stack <- raster::stack(unlist(my_friction_layer_list))
+  # take max
+  tmp_friction <- raster::stackApply(
+    tmp_stack,
+    indices = rep(1, length(tmp_stack@layers)),
+    fun = max,
+    filename = paste(tempdir(), "/friction.tif", sep = ""),
+    datatype = "FLT4S"
+  )
+  # project the raster
+  if (getproj == TRUE) {
+    tmp_proj <- acc_areaproj(tmp_friction)
+  } else{
+    tmp_proj <- my_proj
+  }
+  gdalUtils::gdalwarp(
+    srcfile = paste(tempdir(), "/friction.tif", sep = ""),
+    dstfile = paste(tempdir(), "/friction_projected.tif", sep = ""),
+    of = "GTiff",
+    tr = c(my_outputresolution, my_outputresolution),
+    s_srs = proj4string(tmp_friction),
+    t_srs = tmp_proj,
+    dstnodata = -9999 # is this needed?
+  )
+  # create traveltimes in seconds to cross one cell
+  tmp_friction <-
+    raster(paste(tempdir(), "/friction_projected.tif", sep = ""))
+  tmp_friction <-
+    raster::calc(tmp_friction,
+                 function(x) {
+                   my_outputresolution / ((x * 1000) / 3600)
+                 },
+                 filename = paste(tempdir(), "/friction_projected_tt.tif", sep = ""),
+                 datatype = "INT4U",
+                 options = c("COMPRESS=LZW"))
+  # if user decides to crop the friction layer, crop it
+  if (cropfriction == TRUE) {
+    # (1) reproject the crop layer to match PCS
+    tmp_croplayer <-
+      spTransform(my_croplayer, CRSobj = CRS(proj4string(tmp_friction)))
+    writeOGR(obj = tmp_croplayer,
+             dsn = tempdir(),
+             layer = "croplayer_reproject",
+             "ESRI Shapefile")
+    # (2) crop
+    gdalwarp(
+      srcfile = paste(tempdir(), "/friction_projected_tt.tif", sep = ""),
+      dstfile = paste(tempdir(), "/friction_projected_tt_mask.tif", sep = ""),
+      cutline = paste(tempdir(), "croplayer_reproject.shp", sep = ""),
+      crop_to_cutline = TRUE,
+      dstnodata = -9999
+    )
+    tmp_friction <-
+      raster(paste(tempdir(), "/friction_projected_tt_mask.tif", sep = ""))
+  }
+  return(tmp_friction)
+  unlink(paste(tempdir, "/*.tif", sep =""))
 }

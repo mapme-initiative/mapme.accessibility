@@ -23,22 +23,6 @@ acc_accessibility <-
            knightsmove = TRUE,
            grassbin = "/usr/lib/grass72/",
            max_ram = 3000) {
-    # check package availability before proceeding
-    if (is.element("raster", installed.packages()[, 1]) == F) {
-      print("You do not have 'raster' installed. Please install the package before proceeding")
-    } else{
-      if (is.element("sp", installed.packages()[, 1]) == F) {
-        print("You do not have 'sp' installed. Please install the package before proceeding")
-      } else{
-        if (is.element("rgrass7", installed.packages()[, 1]) == F) {
-          print(
-            "You do not have 'rgrass7' installed. Please install the package before proceeding"
-          )
-        }
-        else{
-          library("raster")
-          library("sp")
-          library("rgrass7")
           # (1) Import data
           print("Setting up grass environment and import data")
           # Create a new GrassDB, set location and mapset
@@ -134,11 +118,8 @@ acc_accessibility <-
           )
           tmp_accessibiltiy <-
             raster(paste(tempdir(), "/accessibility.tif", sep = ""))
+          tmp_accessibiltiy@crs<-sp::CRS(proj4string(my_friction))
           return(tmp_accessibiltiy)
+          unlink(c(paste(tempdir, "/*.tif", sep =""),paste(tempdir, "/sources.*", sep =""),paste(tempdir, "/grassdb*", sep ="")))
         }
 
-
-
-      }
-    }
-  }
