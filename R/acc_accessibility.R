@@ -5,7 +5,6 @@
 #' @param my_friction
 #' @param my_sources
 #' @param knightsmove
-#' @param output_CRS
 #' @param grassbin
 #' @param max_ram
 #'
