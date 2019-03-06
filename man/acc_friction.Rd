@@ -2,7 +2,14 @@
 \alias{acc_friction}
 \title{acc_friction}
 \usage{
-  acc_friction(my_friction_layer_list, my_outputresolution, getproj = TRUE, my_proj = NULL,cropfriction = FALSE,my_croplayer = NULL)
+  acc_friction(
+  my_friction_layer_list,
+  my_outputresolution,
+  getproj = TRUE,
+  my_proj = NULL,
+  cropfriction = FALSE,
+  my_croplayer = NULL
+  )
 }
 \description{
   This function creates a friction map from several friction input layers that contain travelspeeds

@@ -2,7 +2,10 @@
 \alias{acc_radians}
 \title{acc_radians}
 \usage{
-  acc_radians(my_input, my_baselayer)
+  acc_radians(
+  my_input,
+  my_baselayer
+  )
 }
 \description{
   This function creates a slopemap in radians and homogenizes it with the baselayer

@@ -1,4 +1,4 @@
 # accessibility
 Set of R-functions to create accessibility maps
 
-This will provide a set of R functions that use existing packages such as rgdal, gdalutils and rgrass to create "accessibility" or so called "travel-time" maps. 
+Set of wrapper-functions in R to create "accessibility" or so called "travel-time" maps using raster and vector data and existing R packages. 

@@ -2,7 +2,10 @@
 \alias{acc_slopecorr}
 \title{acc_slopecorr}
 \usage{
-  acc_slopecorr(my_input, my_radians)
+  acc_slopecorr(
+  my_input,
+  my_radians
+  )
 }
 \description{
   This function corrects an input raster fcontaining travel speed for slope effects. The conversion is done with the function my_input * (exp(-3 * tan(my_radians)))

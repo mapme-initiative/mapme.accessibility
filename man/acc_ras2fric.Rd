@@ -2,8 +2,13 @@
 \alias{acc_ras2fric}
 \title{acc_ras2fric}
 \usage{
-  acc_ras2fric(my_input, my_baselayer, resampling_method="max", my_reclass_inputvalues = NULL,
-  my_reclass_outputvalues = NULL)
+  acc_ras2fric(
+  my_input,
+  my_baselayer,
+  resampling_method="max",
+  my_reclass_inputvalues = NULL,
+  my_reclass_outputvalues = NULL
+  )
 }
 \description{
   This function converts raster data into a raster layer containing travel speeds that can be used to create a friction map.

@@ -2,7 +2,12 @@
 \alias{acc_vec2fric}
 \title{acc_vec2fric}
 \usage{
-  acc_vec2fric(my_input, my_baselayer, my_speed = NULL, my_speedfield = NULL)
+  acc_vec2fric(
+  my_input,
+  my_baselayer,
+  my_speed = NULL,
+  my_speedfield = NULL
+  )
 }
 \description{
   This function converts vector data into a raster layer containing travel speeds that can be used to create a friction map.
