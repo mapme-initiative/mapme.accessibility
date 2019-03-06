@@ -18,7 +18,7 @@
   \item{my_sources}{A layer containing the destinies for the accessibility map. Should be of type SpatialPolygons(sp)}
   \item{knightsmove}{Use the knightsmove for accessibility calculation? More accurate but also slower. See r.cost document of GRASS for more details. Default value is TRUE.}
   \item{grassbin}{Define here the path to the grass binaries. In Linux Environments typically "/usr/lib/grass72/"}
-  \item{max_ram}{Define the maxiumum amount of RAM to be used for the calculation. Should not exeed your available RAM for this. Generally about 30 to 50 percent of total RAM should be okay. Default value is 3000 which is suitable for computers with 8GB of RAM}
+  \item{max_ram}{Define the maxiumum amount of RAM to be used for the calculation. Should not exeed your available RAM for this. Generally about 30 to 50 \% of total RAM should be okay. Default value is 3000 which is suitable for computers with 8GB of RAM}
 }
 
 \examples{
