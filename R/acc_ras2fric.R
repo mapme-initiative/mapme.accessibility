@@ -79,6 +79,8 @@ acc_ras2fric <-
           tr = res(my_baselayer),
           te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                        " "),
+          s_srs = proj4string(my_input),
+          t_srs = proj4string(my_baselayer),
           r = resampling_method, # should this be max or mode or freely choosable?
           ot = "Float32"
         )
@@ -98,6 +100,8 @@ acc_ras2fric <-
           tr = res(my_baselayer),
           te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                        " "),
+          s_srs = proj4string(my_input),
+          t_srs = proj4string(my_baselayer),
           r = resampling_method,
           ot = "Float32"
         )

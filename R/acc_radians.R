@@ -6,9 +6,6 @@
 #' @param my_input
 #' @param my_baselayer
 #'
-#' @param my_slope_alg
-#' @param save_results
-#'
 #' @return tmp_radians
 #'
 #' @examples NULL
@@ -29,7 +26,8 @@ acc_radians <- function(my_input,
   }
   # homogenized DEM layer if it differs from the baselayer
   if (raster::res(my_input) != raster::res(my_baselayer) |
-      raster::extent(my_input) != raster::extent(my_baselayer)) {
+      raster::extent(my_input) != raster::extent(my_baselayer)|
+      sp::proj4string(my_input) != sp::proj4string(my_baselayer)) {
   print("Homogenize DEM layer with baselayer (gdal)")
   gdalUtils::gdalwarp(
     srcfile = my_input,
@@ -37,6 +35,8 @@ acc_radians <- function(my_input,
     tr = res(my_baselayer),
     te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                  " "),
+    s_srs = proj4string(my_input),
+    t_srs = proj4string(my_baselayer),
     r = "mode",
     ot = "UInt32",
     overwrite = F

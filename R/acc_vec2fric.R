@@ -25,8 +25,8 @@ acc_vec2fric <-
     if (!inherits(my_baselayer,c("RasterLayer"))) {
       stop('Please provide "my_baselayer" as an object of Class RasterLayer.',
            call. = F)}
-    if (!inherits(my_input,c("SpatialPolygonsDataFrame"))) {
-      stop('Please provide "my_input" as an object of Class SpatialPolygonsDataFrame.',
+    if (!inherits(my_input,c("SpatialPolygons"))) {
+      stop('Please provide "my_input" as an object of Class SpatialPolygons',
            call. = F)}
     if (!is.null(my_speed)&!inherits(my_speed,c("numeric","integer"))&!length(my_speed)==1) {
       stop('Please provide "my_speed" as a single integer or numeric.' ,
@@ -44,6 +44,10 @@ acc_vec2fric <-
       tmp_data@data$accsp <- my_speed
     } else {
       tmp_data@data$accsp <- tmp_data@data[,"my_speedfield"]
+    }
+    # reproject if necessary
+    if (sp::proj4string(tmp_data)!=sp::proj4string(my_baselayer)){
+      tmp_data<-spTransform(tmp_data,CRSobj = CRS(proj4string(my_baselayer)))
     }
     rgdal::writeOGR(tmp_data,
              tempdir(),

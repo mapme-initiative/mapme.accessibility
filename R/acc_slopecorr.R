@@ -26,9 +26,11 @@ acc_slopecorr <- function(my_input,
     stop('Please provide "my_radians" as an object of Class RasterLayer.',
          call. = F)
   }
-  if (res(my_input) != res(my_radians) |
-         extent(my_input) != extent(my_radians)) {
-    stop('Extend and/or resolution of "input_data" and "my_radians" differ. Please homogenize before processing',
+  if (raster::res(my_input) != raster::res(my_radians) |
+      raster::extent(my_input) != raster::extent(my_radians)|
+      sp::proj4string(my_input) != sp::proj4string(my_radians)
+      ) {
+    stop('Extend and/or resolution and/or CRS of "input_data" and "my_radians" differ. Please homogenize before processing',
          call. = F)
   }
   # start processing

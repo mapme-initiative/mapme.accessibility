@@ -1,6 +1,6 @@
 #' @title acc_accessibility
 #'
-#' @description Function to calculate accessiblity map
+#' @description Function to calculate accessiblity map from friction and input sources.
 #'
 #' @param my_friction
 #' @param my_sources
