@@ -8,8 +8,8 @@
   This function creates a slopemap in radians and homogenizes it with the baselayer
 }
 \arguments{
-  item{my_input}{Input layer containing a Digital Elevation model DEM. Should be of type raster(raster)}
-  item{my_baselayer}{A baselayer of class "raster" that defines resolution, extent and projection system of the friction map. Most commonly a raster containing land-use values.}
+  \item{my_input}{Input layer containing a Digital Elevation model DEM. Should be of type raster(raster)}
+  \item{my_baselayer}{A baselayer of class "raster" that defines resolution, extent and projection system of the friction map. Most commonly a raster containing land-use values.}
 }
 
 \examples{

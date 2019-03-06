@@ -20,7 +20,7 @@ acc_accessibility <-
   function(my_friction,
            my_sources,
            knightsmove = TRUE,
-           grassbin = "/usr/lib/grass72/",
+           grassbin,
            max_ram = 3000) {
           # (1) Import data
           print("Setting up grass environment and import data")
