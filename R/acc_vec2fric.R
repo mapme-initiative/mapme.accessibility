@@ -59,7 +59,7 @@ acc_vec2fric <-
       a = "accsp",
       dst_filename = paste(tempdir(), "/tempraster.tif", sep =""),
       tr = res(my_baselayer),
-      te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =""),
+      te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =" "),
       ot = "FLT4S",
       a_nodata = "none"
     )
