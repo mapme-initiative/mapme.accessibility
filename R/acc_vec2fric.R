@@ -43,7 +43,7 @@ acc_vec2fric <-
     if (!is.null(my_speed)) {
       tmp_data@data$accsp <- my_speed
     } else {
-      tmp_data@data$accsp <- tmp_data@data[,"my_speedfield"]
+      tmp_data@data$accsp <- tmp_data@data[,my_speedfield]
     }
     # reproject if necessary
     if (sp::proj4string(tmp_data)!=sp::proj4string(my_baselayer)){
