@@ -68,3 +68,4 @@ acc_vec2fric <-
     return(r_tmp)
     unlink(c(paste(tempdir(), "/tempraster.tif", sep =""),paste(tempdir(), "/tempvector.*", sep ="")))
   }
+#test
