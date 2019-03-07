@@ -84,6 +84,11 @@ acc_ras2fric <-
           r = resampling_method, # should this be max or mode or freely choosable?
           ot = "Float32"
         )
+        tmp_raster <- raster::raster(paste(tempdir(),
+                                           "/tempreclassraster_rescale.tif", sep = ""))
+      } else {
+        tmp_raster <- raster::raster(paste(tempdir(),
+                                           "/tempreclassraster.tif", sep = ""))
       }
     } else{
       # without reclassification matrix, only rescale the raster if resolution and extent differ
@@ -105,7 +110,8 @@ acc_ras2fric <-
           r = resampling_method,
           ot = "Float32"
         )
-        tmp.confirmation <- "Rescale"
+        tmp_raster <- raster::raster(paste(tempdir(),
+                                           "/tempreclassraster_rescale.tif", sep = ""))
       } else{
         stop(
           'No differences between input and output data defined. Nothing to do',
@@ -113,8 +119,6 @@ acc_ras2fric <-
         )
       }
     }
-    tmp_raster <- raster::raster(paste(tempdir(),
-                               "/tempreclassraster_rescale.tif", sep = ""))
     return(tmp_raster)
-    unlink(c(paste(tempdir(), "/tempreclassraster.tif", sep =""),paste(tempdir(), "/tempreclassraster_rescale.tif", sep ="")))
+    unlink(paste(tempdir(), "/tempreclassraster*", sep =""))
   }
