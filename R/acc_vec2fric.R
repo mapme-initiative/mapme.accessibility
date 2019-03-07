@@ -23,10 +23,10 @@ acc_vec2fric <-
            my_speedfield = NULL) {
     # Check for correct definition of input variables
     if (!inherits(my_baselayer,c("RasterLayer"))) {
-      stop('Please provide "my_baselayer" as an object of Class RasterLayer.',
+      stop('Please provide "my_baselayer" as an object of Class "RasterLayer".',
            call. = F)}
-    if (!inherits(my_input,c("SpatialPolygons"))) {
-      stop('Please provide "my_input" as an object of Class SpatialPolygons',
+    if (!inherits(my_input,c("Spatial"))) {
+      stop('Please provide "my_input" as an object of Class "Spatial"(sp) e.g. a "SpatialLinesDataframe"',
            call. = F)}
     if (!is.null(my_speed)&!inherits(my_speed,c("numeric","integer"))&!length(my_speed)==1) {
       stop('Please provide "my_speed" as a single integer or numeric.' ,
