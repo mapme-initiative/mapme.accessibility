@@ -5,6 +5,7 @@
 #'
 #' @param my_input
 #' @param my_radians
+#' @param correctionfactor
 #'
 #' @return tmp_slopecorr
 #'
@@ -15,7 +16,8 @@
 
 # define function
 acc_slopecorr <- function(my_input,
-                          my_radians)
+                          my_radians,
+                          correctionfactor=3)
 {
   # check for correct definition of input variables
   if (!inherits(my_input, c("RasterLayer"))) {
@@ -36,6 +38,6 @@ acc_slopecorr <- function(my_input,
   # start processing
   tmp_stack <- raster::stack(my_input, my_radians)
   tmp_slopecorr <-
-    tmp_stack[[1]] * (exp(-3 * tan(tmp_stack[[2]])))
+    tmp_stack[[1]] * (exp(-correctionfactor * tan(tmp_stack[[2]])))
   return(tmp_slopecorr)
 }
