@@ -103,5 +103,5 @@ acc_frition <- function(my_friction_layer_list,
       raster(paste(tempdir(), "/friction_projected_tt_mask.tif", sep = ""))
   }
   return(tmp_friction)
-  unlink(paste(tempdir, "/*.tif", sep =""))
+  unlink(paste(tempdir(), "/*.tif", sep =""))
 }

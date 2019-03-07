@@ -54,5 +54,5 @@ acc_radians <- function(my_input,
     )
   print("Finished processing")
   return(tmp_radians)
-  unlink(c(paste(tempdir, "/dem_homogenized.tif", sep =""),paste(tempdir, "/radians.tif", sep ="")))
+  unlink(c(paste(tempdir(), "/dem_homogenized.tif", sep =""),paste(tempdir(), "/radians.tif", sep ="")))
 }

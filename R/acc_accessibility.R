@@ -119,6 +119,6 @@ acc_accessibility <-
             raster(paste(tempdir(), "/accessibility.tif", sep = ""))
           tmp_accessibiltiy@crs<-sp::CRS(proj4string(my_friction))
           return(tmp_accessibiltiy)
-          unlink(c(paste(tempdir, "/*.tif", sep =""),paste(tempdir, "/sources.*", sep =""),paste(tempdir, "/grassdb*", sep ="")))
+          unlink(c(paste(tempdir(), "/*.tif", sep =""),paste(tempdir(), "/sources.*", sep =""),paste(tempdir(), "/grassdb*", sep ="")))
         }
 

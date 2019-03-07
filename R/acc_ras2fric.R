@@ -116,5 +116,5 @@ acc_ras2fric <-
     tmp_raster <- raster::raster(paste(tempdir(),
                                "/tempreclassraster_rescale.tif", sep = ""))
     return(tmp_raster)
-    unlink(c(paste(tempdir, "/tempreclassraster.tif", sep =""),paste(tempdir, "/tempreclassraster_rescale.tif", sep ="")))
+    unlink(c(paste(tempdir(), "/tempreclassraster.tif", sep =""),paste(tempdir(), "/tempreclassraster_rescale.tif", sep ="")))
   }

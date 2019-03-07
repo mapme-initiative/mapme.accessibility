@@ -55,16 +55,16 @@ acc_vec2fric <-
              "ESRI Shapefile")
     # rasterize
     gdalUtils::gdal_rasterize(
-      src_datasource = paste(tempdir, "/tempvector.shp", sep =""),
+      src_datasource = paste(tempdir(), "/tempvector.shp", sep =""),
       a = "accsp",
-      dst_filename = paste(tempdir, "/tempraster.tif", sep =""),
+      dst_filename = paste(tempdir(), "/tempraster.tif", sep =""),
       tr = res(my_baselayer),
       te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =""),
       ot = "FLT4S",
       a_nodata = "none"
     )
     # return results and delete tempdata
-    r_tmp <- raster::raster(paste(tempdir, "/tempraster.tif", sep =""))
+    r_tmp <- raster::raster(paste(tempdir(), "/tempraster.tif", sep =""))
     return(r_tmp)
-    unlink(c(paste(tempdir, "/tempraster.tif", sep =""),paste(tempdir, "/tempvector.*", sep ="")))
+    unlink(c(paste(tempdir(), "/tempraster.tif", sep =""),paste(tempdir(), "/tempvector.*", sep ="")))
   }
