@@ -29,8 +29,9 @@ acc_radians <- function(my_input,
       raster::extent(my_input) != raster::extent(my_baselayer)|
       sp::proj4string(my_input) != sp::proj4string(my_baselayer)) {
   print("Homogenize DEM layer with baselayer (gdal)")
+  raster::writeRaster(my_input,paste(tempdir(), "/dem.tif", sep = ""))
   gdalUtils::gdalwarp(
-    srcfile = my_input,
+    srcfile = paste(tempdir(), "/dem.tif", sep = ""),
     dstfile = paste(tempdir(), "/dem_homogenized.tif", sep = ""),
     tr = res(my_baselayer),
     te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
