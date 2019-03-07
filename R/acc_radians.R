@@ -20,8 +20,8 @@ acc_radians <- function(my_input,
     stop('Please provide "my_input" as an object of Class RasterLayer.',
          call. = F)
   }
-  if (!inherits(my_radians, c("RasterLayer"))) {
-    stop('Please provide "my_radians" as an object of Class RasterLayer.',
+  if (!inherits(my_baselayer, c("RasterLayer"))) {
+    stop('Please provide "my_baselayer" as an object of Class RasterLayer.',
          call. = F)
   }
   # homogenized DEM layer if it differs from the baselayer
