@@ -14,7 +14,8 @@
 #'
 
 acc_radians <- function(my_input,
-                        my_baselayer) {
+                        my_baselayer,
+                        resampling_method="average") {
   # check for correct definition of input variables
   if (!inherits(my_input, c("RasterLayer"))) {
     stop('Please provide "my_input" as an object of Class RasterLayer.',
@@ -37,7 +38,7 @@ acc_radians <- function(my_input,
                  " "),
     s_srs = proj4string(my_input),
     t_srs = proj4string(my_baselayer),
-    r = "mode",
+    r = resampling_method,
     ot = "UInt32",
     overwrite = F
   )
