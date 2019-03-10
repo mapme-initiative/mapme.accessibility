@@ -59,23 +59,22 @@ acc_ras2fric <-
     if (!is.null(my_reclass_inputvalues)) {
       print("You provided a reclassification matrix. Starting to reclassify the raster")
       # reclassify
+      filename_1<-tempfile(pattern = "raster_",fileext = ".tif")
       raster::reclassify(
         my_input,
         cbind(my_reclass_inputvalues, my_reclass_outputvalues),
         include.lowest = T,
-        filename = paste(tempdir(),
-                         "/tempreclassraster.tif", sep = ""),
+        filename = filename_1,
         datatype = "FLT4S"
       )
       # rescale the raster if resolution and or extent differs
       if (raster::res(my_input) != raster::res(my_baselayer) |
           raster::extent(my_input) != raster::extent(my_baselayer)) {
         print("Starting to homogenize raster with baselayer")
+        filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
         gdalUtils::gdalwarp(
-          srcfile = paste(tempdir(),
-                          "/tempreclassraster.tif", sep = ""),
-          dstfile = paste(tempdir(),
-                          "/tempreclassraster_rescale.tif", sep = ""),
+          srcfile = filename_1,
+          dstfile = filename_2,
           tr = res(my_baselayer),
           te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                        " "),
@@ -84,24 +83,22 @@ acc_ras2fric <-
           r = resampling_method, # should this be max or mode or freely choosable?
           ot = "Float32"
         )
-        tmp_raster <- raster::raster(paste(tempdir(),
-                                           "/tempreclassraster_rescale.tif", sep = ""))
+        tmp_raster <- raster::raster(filename_2)
       } else {
-        tmp_raster <- raster::raster(paste(tempdir(),
-                                           "/tempreclassraster.tif", sep = ""))
+        tmp_raster <- raster::raster(filename_1)
       }
     } else{
       # without reclassification matrix, only rescale the raster if resolution and extent differ
       if (res(my_input) != res(my_baselayer) |
           raster::extent(my_input) != raster::extent(my_baselayer)) {
-        raster::writeRaster(my_input,
-                    paste(tempdir(), "/tempreclassraster.tif", sep = ""))
+
+        # raster::writeRaster(my_input,
+        #             paste(tempdir(), "/tempreclassraster.tif", sep = ""))
         print("Starting to homogenize the raster with baselayer")
+        filename_3<-tempfile(pattern = "raster_",fileext = ".tif")
         gdalUtils::gdalwarp(
-          srcfile = paste(tempdir(),
-                          "/tempreclassraster.tif", sep = ""),
-          dstfile = paste(tempdir(),
-                          "/tempreclassraster_rescale.tif", sep = ""),
+          srcfile = my_input@file@name,
+          dstfile = filename_3,
           tr = res(my_baselayer),
           te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
                        " "),
@@ -110,8 +107,7 @@ acc_ras2fric <-
           r = resampling_method,
           ot = "Float32"
         )
-        tmp_raster <- raster::raster(paste(tempdir(),
-                                           "/tempreclassraster_rescale.tif", sep = ""))
+        tmp_raster <- raster::raster(filename_3)
       } else{
         stop(
           'No differences between input and output data defined. Nothing to do',

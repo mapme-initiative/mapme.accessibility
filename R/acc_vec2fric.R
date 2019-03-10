@@ -16,6 +16,24 @@
 #'
 
 # define function
+# function to create a friction input layer from vector data
+#' @title acc_vec2fric
+#'
+#' @description Function to convert vector to friction base data
+#'
+#' @param my_input
+#' @param my_baselayer
+#' @param my_speed
+#' @param my_speedfield
+#'
+#' @return r_tmp
+#'
+#' @examples NULL
+#'
+#' @export acc_vec2fric
+#'
+
+# define function
 acc_vec2fric <-
   function(my_input,
            my_baselayer,
@@ -49,23 +67,27 @@ acc_vec2fric <-
     if (sp::proj4string(tmp_data)!=sp::proj4string(my_baselayer)){
       tmp_data<-spTransform(tmp_data,CRSobj = CRS(proj4string(my_baselayer)))
     }
+    tmp_name<-gsub("/","",tempfile(pattern="tempvector",tmpdir = ""))
     rgdal::writeOGR(tmp_data,
-             tempdir(),
-             "tempvector",
-             "ESRI Shapefile")
+                    tempdir(),
+                    tmp_name,
+                    "ESRI Shapefile")
+    # create tempname
+    tmp_name_raster<-tempfile(pattern = "raster_",fileext = ".tif")
     # rasterize
     gdalUtils::gdal_rasterize(
-      src_datasource = paste(tempdir(), "/tempvector.shp", sep =""),
+      src_datasource = paste(tempdir(),"/",tmp_name, ".shp", sep =""),
       a = "accsp",
-      dst_filename = paste(tempdir(), "/tempraster.tif", sep =""),
+      dst_filename = tmp_name_raster,
       tr = res(my_baselayer),
       te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =" "),
-      ot = "FLT4S",
+      ot = "UInt16",
+      co = c("COMPRESS=LZW"),
       a_nodata = "none"
     )
-    # return results and delete tempdata
-    r_tmp <- raster::raster(paste(tempdir(), "/tempraster.tif", sep =""))
+    r_tmp<-raster(tmp_name_raster)
+    # return results and delete vectordata
+    unlink(c(paste(tempdir(), "/tempvector.*", sep ="")))
     return(r_tmp)
-    unlink(c(paste(tempdir(), "/tempraster.tif", sep =""),paste(tempdir(), "/tempvector.*", sep ="")))
   }
 #test
