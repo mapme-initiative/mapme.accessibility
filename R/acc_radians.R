@@ -51,7 +51,6 @@ acc_radians <- function(my_input,
       s_srs = proj4string(my_input),
       t_srs = proj4string(my_baselayer),
       r = resampling_method,
-      ot = "UInt32",
       overwrite = F
     )
     tmp_radians<-raster(filename_2)
