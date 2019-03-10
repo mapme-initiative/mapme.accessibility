@@ -7,7 +7,8 @@
   my_baselayer,
   resampling_method="max",
   my_reclass_inputvalues = NULL,
-  my_reclass_outputvalues = NULL
+  my_reclass_outputvalues = NULL,
+  my_datatype = "UInt16"
   )
 }
 \description{

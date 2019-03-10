@@ -6,7 +6,8 @@
   my_input,
   my_baselayer,
   my_speed = NULL,
-  my_speedfield = NULL
+  my_speedfield = NULL,
+  my_datatype = "UInt16"
   )
 }
 \description{
