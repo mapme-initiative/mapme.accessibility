@@ -7,24 +7,7 @@
 #' @param my_baselayer
 #' @param my_speed
 #' @param my_speedfield
-#'
-#' @return r_tmp
-#'
-#' @examples NULL
-#'
-#' @export acc_vec2fric
-#'
-
-# define function
-# function to create a friction input layer from vector data
-#' @title acc_vec2fric
-#'
-#' @description Function to convert vector to friction base data
-#'
-#' @param my_input
-#' @param my_baselayer
-#' @param my_speed
-#' @param my_speedfield
+#' @param my_datatype
 #'
 #' @return r_tmp
 #'
@@ -38,7 +21,8 @@ acc_vec2fric <-
   function(my_input,
            my_baselayer,
            my_speed = NULL,
-           my_speedfield = NULL) {
+           my_speedfield = NULL,
+           my_datatype = "UInt16") {
     # Check for correct definition of input variables
     if (!inherits(my_baselayer,c("RasterLayer"))) {
       stop('Please provide "my_baselayer" as an object of Class "RasterLayer".',
@@ -81,7 +65,7 @@ acc_vec2fric <-
       dst_filename = tmp_name_raster,
       tr = res(my_baselayer),
       te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =" "),
-      ot = "UInt16",
+      ot = my_datatype,
       co = c("COMPRESS=LZW"),
       a_nodata = "none"
     )

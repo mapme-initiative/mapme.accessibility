@@ -17,6 +17,7 @@
 \item{my_baselayer}{A baselayer that defines resolution, extent and projection system of the friction map. Should be of class raster(raster). Most commonly a layer containing land-use values.}
 \item{my_speed}{Travel speed in km/h that applies to all polygons in this layer. If the travelspeed of polygons differs depending on a certain feature (e.g. paved/unpaved roads) use my_speedfield instead}
 \item{my_speedfield}{Column name of the input layer that contains travel speeds for the different polygons in km/h}
+\item{my_datatype}{GeoTiff datatype for temporary storage of data. Defaults to UInt16 storing integer values. For details see GDAL documentation.}
 }
 
 \examples{

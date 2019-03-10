@@ -8,6 +8,7 @@
 #' @param resampling_method
 #' @param my_reclass_inputvalues
 #' @param my_reclass_outputvalues
+#' @param my_datatype
 #'
 #' @return tmp_raster
 #'
@@ -22,7 +23,8 @@ acc_ras2fric <-
            my_baselayer,
            resampling_method="max",
            my_reclass_inputvalues = NULL,
-           my_reclass_outputvalues = NULL)
+           my_reclass_outputvalues = NULL,
+           my_datatype = "UInt16")
   {
     # check for correct definition of input variables
     if (!inherits(my_baselayer, c("RasterLayer"))) {
@@ -65,7 +67,7 @@ acc_ras2fric <-
         cbind(my_reclass_inputvalues, my_reclass_outputvalues),
         include.lowest = T,
         filename = filename_1,
-        datatype = "FLT4S"
+        datatype = "INT2U"
       )
       # rescale the raster if resolution and or extent differs
       if (raster::res(my_input) != raster::res(my_baselayer) |
@@ -81,7 +83,8 @@ acc_ras2fric <-
           s_srs = proj4string(my_input),
           t_srs = proj4string(my_baselayer),
           r = resampling_method, # should this be max or mode or freely choosable?
-          ot = "Float32"
+          ot = my_datatype,
+          co = c("COMPRESS=LZW")
         )
         tmp_raster <- raster::raster(filename_2)
       } else {
@@ -105,7 +108,8 @@ acc_ras2fric <-
           s_srs = proj4string(my_input),
           t_srs = proj4string(my_baselayer),
           r = resampling_method,
-          ot = "Float32"
+          ot = my_datatype,
+          co = c("COMPRESS=LZW")
         )
         tmp_raster <- raster::raster(filename_3)
       } else{
@@ -116,5 +120,4 @@ acc_ras2fric <-
       }
     }
     return(tmp_raster)
-    unlink(paste(tempdir(), "/tempreclassraster*", sep =""))
   }
