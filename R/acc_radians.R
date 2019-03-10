@@ -25,35 +25,37 @@ acc_radians <- function(my_input,
     stop('Please provide "my_baselayer" as an object of Class RasterLayer.',
          call. = F)
   }
-  # homogenized DEM layer if it differs from the baselayer
-  if (raster::res(my_input) != raster::res(my_baselayer) |
-      raster::extent(my_input) != raster::extent(my_baselayer)|
-      sp::proj4string(my_input) != sp::proj4string(my_baselayer)) {
-  print("Homogenize DEM layer with baselayer (gdal)")
-  gdalUtils::gdalwarp(
-    srcfile = my_input@file@name,
-    dstfile = paste(tempdir(), "/dem_homogenized.tif", sep = ""),
-    tr = res(my_baselayer),
-    te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
-                 " "),
-    s_srs = proj4string(my_input),
-    t_srs = proj4string(my_baselayer),
-    r = resampling_method,
-    ot = "UInt32",
-    overwrite = F
-  )
-  }else{raster::writeRaster(my_input,paste(tempdir(), "/dem_homogenized.tif", sep = ""))}
+  # create slop map
   print("Create slope map (raster)")
+  filename_1<-tempfile(pattern = "raster_",fileext = ".tif")
   tmp_radians <-
     terrain(
-      x = raster(paste(
-        tempdir(), "/dem_homogenized.tif", sep = ""
-      )),
+      x = my_input,
       opt = "slope",
       unit = "radians",
-      filename = paste(tempdir(), "/radians.tif", sep = "")
+      filename = filename_1
     )
+  tmp_radians<-raster(filename_1)
+  # homogenized DEM layer if it differs from the baselayer
+  if (raster::res(my_input) != raster::res(my_baselayer) ||
+      raster::extent(my_input) != raster::extent(my_baselayer)||
+      sp::proj4string(my_input) != sp::proj4string(my_baselayer)) {
+    print("Homogenize DEM layer with baselayer (gdal)")
+    filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
+    gdalUtils::gdalwarp(
+      srcfile = filename_1,
+      dstfile = filename_2,
+      tr = res(my_baselayer),
+      te = paste(extent(my_baselayer)[c(1, 3, 2, 4)], collapse =
+                   " "),
+      s_srs = proj4string(my_input),
+      t_srs = proj4string(my_baselayer),
+      r = resampling_method,
+      ot = "UInt32",
+      overwrite = F
+    )
+    tmp_radians<-raster(filename_2)
+  }
   print("Finished processing")
   return(tmp_radians)
-  unlink(c(paste(tempdir(), "/dem_homogenized.tif", sep =""),paste(tempdir(), "/radians.tif", sep ="")))
 }
