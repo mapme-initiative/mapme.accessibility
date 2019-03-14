@@ -26,7 +26,6 @@ acc_accessibility <-
     print("Setting up grass environment and import data")
     # Create a new GrassDB, set location and mapset
     filename_1 <- tempfile(pattern = "gisDbase_")
-
     loc <- initGRASS(
       grassbin,
       home = tempdir(),
@@ -35,7 +34,6 @@ acc_accessibility <-
       mapset = "grassmapset",
       override = TRUE
     )
-
     # create tempname and save friction raster to temp
     filename_2 <- tempfile(pattern = "raster_", fileext = ".tif")
     writeRaster(x = my_friction,
@@ -74,9 +72,8 @@ acc_accessibility <-
     execGRASS(
       "v.in.ogr",
       flags = c("r", "overwrite", "o"),
-      # r limits to the current mapregion, o skips projection check -> make sure it is the same was output raster
       parameters = list(
-        input = paste(filename_3, ".shp", sep = ""),
+        input = paste(tempdir(), "/", filename_3, ".shp", sep = ""),
         output = "sources"
       )
     )
