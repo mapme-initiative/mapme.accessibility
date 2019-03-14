@@ -48,14 +48,18 @@ acc_frition <- function(my_friction_layer_list,
   }
   # stack the layers
   tmp_stack <- raster::stack(unlist(my_friction_layer_list))
+  # create tempfilename
+  filename_1<-tempfile(pattern = "raster_",fileext = ".tif")
   # take max
   tmp_friction <- raster::stackApply(
     tmp_stack,
     indices = rep(1, length(tmp_stack@layers)),
     fun = max,
-    filename = paste(tempdir(), "/friction.tif", sep = ""),
+    filename = filename_1,
     datatype = "FLT4S"
   )
+  # create tempfilename
+  filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
   # project the raster
   if (getproj == TRUE) {
     tmp_proj <- acc_areaproj(tmp_friction)
@@ -63,45 +67,50 @@ acc_frition <- function(my_friction_layer_list,
     tmp_proj <- my_proj
   }
   gdalUtils::gdalwarp(
-    srcfile = paste(tempdir(), "/friction.tif", sep = ""),
-    dstfile = paste(tempdir(), "/friction_projected.tif", sep = ""),
+    srcfile = filename_1,
+    dstfile = filename_2,
     of = "GTiff",
     tr = c(my_outputresolution, my_outputresolution),
     s_srs = proj4string(tmp_friction),
     t_srs = tmp_proj,
     dstnodata = -9999 # is this needed?
   )
+  # create tempfilename
+  filename_3<-tempfile(pattern = "raster_",fileext = ".tif")
   # create traveltimes in seconds to cross one cell
   tmp_friction <-
-    raster(paste(tempdir(), "/friction_projected.tif", sep = ""))
+    raster(filename_2)
   tmp_friction <-
     raster::calc(tmp_friction,
                  function(x) {
                    my_outputresolution / ((x * 1000) / 3600)
                  },
-                 filename = paste(tempdir(), "/friction_projected_tt.tif", sep = ""),
+                 filename = filename_3,
                  datatype = "INT4U",
                  options = c("COMPRESS=LZW"))
   # if user decides to crop the friction layer, crop it
   if (cropfriction == TRUE) {
     # (1) reproject the crop layer to match PCS
+    # create tempfilename
+    filename_4<-gsub("/","",tempfile(pattern="tempvector",tmpdir = ""))
     tmp_croplayer <-
       spTransform(my_croplayer, CRSobj = CRS(proj4string(tmp_friction)))
     writeOGR(obj = tmp_croplayer,
              dsn = tempdir(),
-             layer = "croplayer_reproject",
+             layer = filename_4,
              "ESRI Shapefile")
+    # create tempfilename
+    filename_5<-tempfile(pattern = "raster_",fileext = ".tif")
     # (2) crop
     gdalwarp(
-      srcfile = paste(tempdir(), "/friction_projected_tt.tif", sep = ""),
-      dstfile = paste(tempdir(), "/friction_projected_tt_mask.tif", sep = ""),
-      cutline = paste(tempdir(), "croplayer_reproject.shp", sep = ""),
+      srcfile = filename_3,
+      dstfile = filename_5,
+      cutline = paste(tempdir(),"/",filename_4,".shp", sep = ""),
       crop_to_cutline = TRUE,
       dstnodata = -9999
     )
     tmp_friction <-
-      raster(paste(tempdir(), "/friction_projected_tt_mask.tif", sep = ""))
+      raster(filename_5)
   }
   return(tmp_friction)
-  unlink(paste(tempdir(), "/*.tif", sep =""))
 }
