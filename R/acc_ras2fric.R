@@ -70,7 +70,7 @@ acc_ras2fric <-
         datatype = "INT2U"
       )
       # rescale the raster if resolution and or extent differs
-      if (raster::res(my_input) != raster::res(my_baselayer) |
+      if (raster::res(my_input) != raster::res(my_baselayer) ||
           raster::extent(my_input) != raster::extent(my_baselayer)) {
         print("Starting to homogenize raster with baselayer")
         filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
@@ -92,7 +92,7 @@ acc_ras2fric <-
       }
     } else{
       # without reclassification matrix, only rescale the raster if resolution and extent differ
-      if (res(my_input) != res(my_baselayer) |
+      if (res(my_input) != res(my_baselayer) ||
           raster::extent(my_input) != raster::extent(my_baselayer)) {
 
         # raster::writeRaster(my_input,
