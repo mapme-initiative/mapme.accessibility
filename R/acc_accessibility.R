@@ -109,7 +109,7 @@ acc_accessibility <-
     filename_4 <- tempfile(pattern = "raster_", fileext = ".tif")
     execGRASS(
       "r.out.gdal",
-      flags = "overwrite",
+      flags = c("overwrite","TFW=YES","type=UInt32"),
       parameters = list(input = "accessibility",
                         output = filename_4)
     )
