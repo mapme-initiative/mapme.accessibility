@@ -1,7 +1,7 @@
 Package: AccessibilityMaps
 Type: Package
 Title: Creation of Accessibility Maps in R
-Version: 0.1.0
+Version: 0.2.0
 Author: Johannes Schielein, Gabriel Frey, Javier miranda
 Maintainer: Johannes Schielein <accessibilitychief@gmail.com>
 Depends: R (>= 2.15.0), raster, rgdal, gdalUtils, rgrass7, sp
