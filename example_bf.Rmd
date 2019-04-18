@@ -14,8 +14,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Installation
-In order to use the package you need to have GRASS installed. For installation please refer to: https://grass.osgeo.org/download/. 
+# Installation
+In order to use the package you need to have GRASS GIS installed. For installation please refer to: https://grass.osgeo.org/download/. 
 
 The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: **devtools::install_github("s5joschi/accessibility")**.  Activate the library as usual before usage **library(AccessibilityMaps)**. 
 

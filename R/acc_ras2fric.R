@@ -35,22 +35,22 @@ acc_ras2fric <-
       stop('Please provide "my_input" as an object of Class RasterLayer',
            call. = F)
     }
-    if (!is.null(my_reclass_inputvalues) &
+    if (!is.null(my_reclass_inputvalues) &&
         is.null(my_reclass_outputvalues)) {
       stop(
         'You provided reclassification input values without providing output values. Please specify a vector of the same length with output values.',
         call. = F
       )
     }
-    if (is.null(my_reclass_inputvalues) &
+    if (is.null(my_reclass_inputvalues) &&
         !is.null(my_reclass_outputvalues)) {
       stop(
         'You provided reclassification output values without providing input values. Please specify a vector of the same length with input values.',
         call. = F
       )
     }
-    if (!is.null(my_reclass_inputvalues) &
-        !is.null(my_reclass_outputvalues) &
+    if (!is.null(my_reclass_inputvalues) &&
+        !is.null(my_reclass_outputvalues) &&
         length(my_reclass_inputvalues) != length(my_reclass_outputvalues)) {
       stop(
         'Input and Outputvalues do not share the same length. Please provide two vectors with equal length to reclassify',

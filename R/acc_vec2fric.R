@@ -30,13 +30,13 @@ acc_vec2fric <-
     if (!inherits(my_input,c("Spatial"))) {
       stop('Please provide "my_input" as an object of Class "Spatial"(sp) e.g. a "SpatialLinesDataframe"',
            call. = F)}
-    if (!is.null(my_speed)&!inherits(my_speed,c("numeric","integer"))&!length(my_speed)==1) {
+    if (!is.null(my_speed)&&!inherits(my_speed,c("numeric","integer"))&&!length(my_speed)==1) {
       stop('Please provide "my_speed" as a single integer or numeric.' ,
            call. = F)}
-    if (!is.null(my_speedfield)&!is.element(my_speedfield,colnames(my_input@data))) {
+    if (!is.null(my_speedfield)&&!is.element(my_speedfield,colnames(my_input@data))) {
       stop(paste("Could not find",my_speedfield,"in my_input@data. Please provide a valid field name") ,
            call. = F)}
-    if (!is.null(my_speedfield)&!is.null(my_speed)) {
+    if (!is.null(my_speedfield)&&!is.null(my_speed)) {
       stop('You have to either specify a valid travel speed for all features with "my_speed" or a valid field name containing travelspeeds with "my_speedfield"' ,
            call. = F)}
     ## start processing
