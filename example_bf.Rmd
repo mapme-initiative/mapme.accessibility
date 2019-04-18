@@ -20,8 +20,11 @@ In order to use the package you need to have GRASS GIS installed. For installati
 The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: **devtools::install_github("s5joschi/accessibility")**.  Activate the library as usual before usage **library(AccessibilityMaps)**. 
 
 
-```{r cars}
-summary(cars)
+# Setup Working Directory and get data
+The following code creates a working directory, input and output folders and downloads the example data. 
+```{r setup wd and data}
+
+
 ```
 
 ## Including Plots
