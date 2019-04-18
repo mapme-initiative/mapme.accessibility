@@ -12,6 +12,7 @@
 #' @export acc_areaproj
 
 acc_areaproj <- function(my_input) {
+  my_input<-spTransform(my_input,CRS(projargs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
   bb <- raster::extent(my_input)
   cntr_long <- (bb[3] - bb[1]) * 0.5 + bb[1]
   cntr_lat <- (bb[4] - bb[2]) * 0.5 + bb[2]
