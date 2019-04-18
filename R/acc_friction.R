@@ -30,19 +30,19 @@ acc_friction <- function(my_friction_layer_list,
     stop('Please provide "my_friction_layer_list" as an object of Class "list".',
          call. = F)
   }
-  if (getproj==FALSE|!is.null(my_proj)&&!inherits(my_proj, c("character"))) {
+  if (getproj==FALSE && !inherits(my_proj, "character")) {
     stop('You decided to provide a projection system. Please provide "my_proj" as an object of Class "character" containing a valid proj4string definition.',
          call. = F)
   }
-  if (getproj==FALSE&&!is.null(my_proj)) {
+  if (getproj==TRUE && !is.null(my_proj)) {
     stop('You decided to provide a custom projection system. Please set "getproj" to FALSE',
          call. = F)
   }
-  if (!is.null(my_croplayer)&&!inherits(my_proj, c("Spatial"))) {
+  if (!is.null(my_croplayer) && !inherits(my_proj, c("Spatial"))) {
     stop('You decided to provide a layer to crop your data. Please provide "my_croplayer" as an object of Class "SpatialPolygonsDataFrame".',
          call. = F)
   }
-  if (!is.null(my_croplayer)&&cropfriction==FALSE) {
+  if (!is.null(my_croplayer) && cropfriction==FALSE) {
     stop('You decided to provide a layer to crop your data. Please set cropfriction = TRUE to proceed',
          call. = F)
   }
