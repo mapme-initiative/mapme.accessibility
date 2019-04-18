@@ -14,11 +14,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Installation
+In order to use the package you need to have GRASS installed. For installation please refer to: https://grass.osgeo.org/download/. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: **devtools::install_github("s5joschi/accessibility")**.  Activate the library as usual before usage **library(AccessibilityMaps)**. 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
 summary(cars)
