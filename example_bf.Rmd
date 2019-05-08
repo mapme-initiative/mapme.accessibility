@@ -17,22 +17,61 @@ knitr::opts_chunk$set(echo = TRUE)
 # Installation
 In order to use the package you need to have GRASS GIS installed. For installation please refer to: https://grass.osgeo.org/download/. 
 
-The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: **devtools::install_github("s5joschi/accessibility")**.  Activate the library as usual before usage **library(AccessibilityMaps)**. 
-
+The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: 
+```{r installation}
+devtools::install_github("s5joschi/accessibility")
+library(AccessibilityMaps)
+```
 
 # Setup Working Directory and get data
 The following code creates a working directory, input and output folders and downloads the example data. 
 ```{r setup wd and data}
+dir.create("accessibility_example")
+setwd("accessibility_example/")
 
+download.file(
+  "https://github.com/s5joschi/accessibility/raw/master/example/input.zip",
+  destfile = "input.zip"
+)
+unzip("input.zip")
+
+dir.create("output")
 
 ```
 
-## Including Plots
+# load and reprocess data
+We load data for Burkina Faso. 
+```{r load}
+# landcover 
+r_landcover<-raster("input/landuse/esa-copernicus-prototype_0005dergrees.tif")
+# digital elevation model (DEM)
+r_dem<-
+  raster(
+    "input/dem/bf_elevation.tif"
+    )
+# administrational boundaries
+spodf_admin<-
+  readOGR("input/admin/",
+          "gis_osm_places_a_free_1"
+          )
+# OSM roads
+spodf_roads<-
+  readOGR(
+    "input/roads/",
+    "gis_osm_roads_free_1_mainroads"
+    )
+# OSM places
+spodf_sources<-
+  readOGR(
+    "input/admin/",
+    "gis_osm_places_free_1"
+    )
 
-You can also embed plots, for example:
+# plot some of the base-data
+plot(r_landcover)
+plot(spodf_admin,border="red",add=T)
+plot(spodf_roads,col="black",add=T)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
