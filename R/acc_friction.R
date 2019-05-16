@@ -73,6 +73,7 @@ acc_friction <- function(my_friction_layer_list,
     tr = c(my_outputresolution, my_outputresolution),
     s_srs = proj4string(tmp_friction),
     t_srs = tmp_proj,
+    r = "max",
     dstnodata = -9999 # is this needed?
   )
   # create tempfilename
