@@ -19,15 +19,15 @@ In order to use the package you need to have GRASS GIS installed. For installati
 
 The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: 
 ```{r installation}
-devtools::install_github("s5joschi/accessibility")
+#devtools::install_github("s5joschi/accessibility")
 library(AccessibilityMaps)
 ```
 
 # Setup Working Directory and get data
 The following code creates a working directory, input and output folders and downloads the example data. 
 ```{r setup wd and data}
-dir.create("accessibility_example")
-setwd("accessibility_example/")
+#dir.create("accessibility_example")
+# setwd("accessibility_example/")
 
 download.file(
   "https://github.com/s5joschi/accessibility/raw/master/example/input.zip",
@@ -39,7 +39,6 @@ dir.create("output")
 
 ```
 
-# load and reprocess data
 We load data for Burkina Faso. 
 ```{r load}
 # landcover 
@@ -66,12 +65,50 @@ spodf_sources<-
     "input/admin/",
     "gis_osm_places_free_1"
     )
-
-# plot some of the base-data
-plot(r_landcover)
-plot(spodf_admin,border="red",add=T)
-plot(spodf_roads,col="black",add=T)
-
+```
+Let's plot some of the base-data
+```{r plot}
+plot(
+  r_landcover
+  )
+plot(
+  spodf_admin,
+  border="red",
+  add=T)
+plot(
+  spodf_roads,
+  col="black",
+  add=T
+  )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+We will start now to create input layers for the calculation of the friction map. We will beginn by creating a column with travel speeds based on the surface type of the road. If it is a primary or primary_link road we assume it is paved. We will then use the function vec2fric which transforms a vector layer to a friction input raster. Our baselayer for the friction map is the landcover layer. 
+```{r inputs}
+# 3.1 roads
+# create a column with travelspeeds for dry and wetseason
+spodf_roads$s_dry<-
+  ifelse(spodf_roads$fclass%in%c("primary","primary_link"),
+         80,
+         40
+         )
+spodf_roads$s_wet<-
+  ifelse(spodf_roads$fclass%in%c("primary","primary_link"),
+         80,
+         10)
+
+# create friction input from roads
+r_roads_dry<-
+  acc_vec2fric(my_input = spodf_roads,
+               my_baselayer = r_landcover,
+               my_speedfield = "s_dry"
+               )
+r_roads_wet<-
+  acc_vec2fric(my_input = spodf_roads,
+               my_baselayer = r_landcover,
+               my_speedfield = "s_wet")
+
+# plot the rasterized roads
+plot(r_roads_dry,
+     col=rainbow(2))
+```
+We are no going to process the landcover input data 
