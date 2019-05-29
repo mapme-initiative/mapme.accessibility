@@ -23,5 +23,5 @@
 }
 
 \examples{
-  acc_accessibility()
+# Please refer to https://s5joschi.github.io/accessibility/ to see usage examples.
 }

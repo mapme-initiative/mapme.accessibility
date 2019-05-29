@@ -1,0 +1,26 @@
+<PAMDataset>
+  <Metadata>
+    <MDI key=" Copyright">ESA 2017 - UCLouvain</MDI>
+    <MDI key=" Data Set">Prototype land cover map of Africa v1.0 at 20 m based on 1 year of  Sentinel-2A observations from December 2015 to December 2016.</MDI>
+    <MDI key=" Scaling Factor">none </MDI>
+    <MDI key=" Warning">Please note that this prototype is an ongoing work and that it has not been validated.</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <Histograms>
+      <HistItem>
+        <HistMin>0.55</HistMin>
+        <HistMax>10.45</HistMax>
+        <BucketCount>10</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>10011|13269|8279|27183|9|17|54|125|0|166</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">10</MDI>
+      <MDI key="STATISTICS_MEAN">2.9317239862636</MDI>
+      <MDI key="STATISTICS_MINIMUM">1</MDI>
+      <MDI key="STATISTICS_STDDEV">1.2511388279613</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
