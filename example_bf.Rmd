@@ -6,43 +6,62 @@ knit: (function(input_file, encoding) {
  encoding=encoding,
  output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "s5joschi"
-date: "April 18, 2019"
+date: "July 18, 2019"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Introduction
+
+This tutorial showcases the creation of *Accessibility Maps* also referred to as *Travel Time Maps* in *R* using the *AccessibilityMaps* package. We will create maps that exhibit travel times from any given location in Burkina Faso to cities with more than 1 Million inhabitants inside the country. We will create two distinct maps, one for the dry-season where unpaved roads function better for car transport and one for the rainy season where travel speed on unpaved roads is dramatically reduced. 
+
+The *AccessibilityMaps* package provides mostly wrapper functions to existing packages and FOSS GIS-libraries in and outside of *R*. Most geodata processing is done with *GDAL* which is more efficient and less depended on *RAM* in contrast to the *raster* package in *R*. This allows you to process large raster data-sets with several million raster-cells to create high resolution maps for larger research areas. The *Travel Time Maps* are calculated using the *r.cost* function from *GRASS* (for a documentation see [here](https://grass.osgeo.org/grass72/manuals/r.cost.html)). 
 
 # Installation
-In order to use the package you need to have GRASS GIS installed. For installation please refer to: https://grass.osgeo.org/download/. 
 
-The easiest way to install the Accessibility package is using the *devtools* package.  The installation command should look like this: 
+In order to use the package you need to have *GRASS GIS* and *GDAL* installed. Both are automatically installed if you install [Quantum GIS](https://qgis.org) which is also a good software solution for visualizing the results and creating good locking, publishable maps. If you prefer to install *GRASS* and *GDAL* as standalone versions please refer to <https://gdal.org/> and <https://grass.osgeo.org/download/> to obtain the latest stable versions. It is highly recommended to use the stable versions instead of the latest, but unstable releases. Please make sure that you have *GRASS* and *GDAL* installed before you proceed.
+
+The easiest way to install the *AccessibilityMaps* package is using the *devtools* package in *R* which allows you to download and install everything within *R*.  The installation command should look like this: 
+
 ```{r installation, message=FALSE, warning=FALSE}
-#devtools::install_github("s5joschi/accessibility")
+
+library("devtools")
+install_github("s5joschi/accessibility")
+# once installed just activate the package with 
 library(AccessibilityMaps)
 ```
 
-# Setup Working Directory and get data
-The following code creates a working directory, input and output folders and downloads the example data. 
-```{r setup wd and data}
-#dir.create("accessibility_example")
-# setwd("accessibility_example/")
+The *AccessibilityMaps* package will install automatically a set of R-packages in the background, if they are not already installed on your system Those packages are *raster*, *rgdal*, *gdalUtils*, *rgrass7* and *sp*.
 
+We will proceed by setting up the basic working environment for this tutorial and by downloading the input data. The input-data consist of a vector layer with roads in Burkina Faso from the [Open Streetmap](https://www.openstreetmap.org/) project. This data  was downloaded from the website of [Geofabrik](https://www.geofabrik.de/data/download.html). Furthermore we will use a prototype of land-cover data for Africa in 2016 which is provided in 10 meters resolution from the *ESA copernicus mission* (found [here](http://2016africalandcover20m.esrin.esa.int/download.php)). You do not need to download the data from these websites. Just use the script below to download a copy from this repository. 
+
+```{r setup wd and data, eval=FALSE}
+# create and set working directory
+dir.create("accessibility_example")
+setwd("accessibility_example/")
+# download data and unzip it
 download.file(
   "https://github.com/s5joschi/accessibility/raw/master/example/input.zip",
   destfile = "input.zip"
 )
 unzip("input.zip")
-
+# create an output folder for the results
 dir.create("output")
 
 ```
 
-We load data for Burkina Faso. 
-```{r load}
+# The Friction Map
+A friction map is a raster layer that shows how much time is required to cross each raster cell in vertical or horizontal space depending on the underlying surface. Cells that contain roads or navigable rivers on flat surfaces have a very low friction i.e. they are quick to be crossed. In contrast a forest or bush-lands in mountains areas have an extremely high friction. The friction map together with a set of travel destinies are the two main ingredients to create travel time maps.  
+Let's First load the input-data to create the friction map into *R*: 
+
+```{r load, message=FALSE, include=TRUE, results="hide" }
 # landcover 
-r_landcover<-raster("input/landuse/esa-copernicus-prototype_0005dergrees.tif")
+r_landcover <-
+  raster(
+    "input/landuse/esa-copernicus-prototype_0005dergrees.tif"
+    )
 # digital elevation model (DEM)
 r_dem<-
   raster(
@@ -65,8 +84,13 @@ spodf_sources<-
     "input/admin/",
     "gis_osm_places_free_1"
     )
+# convert popuplation data from OSM to numeric
+spodf_sources@data$population<-as.numeric(as.character(spodf_sources@data$population))
+
 ```
-Let's plot some of the base-data
+
+Let's plot some of the input-data to create a map with land-cover classes, the road network and nonadministrative boundaries of Burkina Faso:
+
 ```{r plot}
 plot(
   r_landcover
@@ -82,33 +106,161 @@ plot(
   )
 ```
 
-We will start now to create input layers for the calculation of the friction map. We will beginn by creating a column with travel speeds based on the surface type of the road. If it is a primary or primary_link road we assume it is paved. We will then use the function vec2fric which transforms a vector layer to a friction input raster. Our baselayer for the friction map is the landcover layer. 
-```{r inputs}
+We will start now to process the layers that will be later used to create the friction map. To prepare our road layer for processing we first need to create a column in the attribute table that contains travel speeds in km/h based on the surface type of the road. If it is a road with the category *primary* or *primary_link* (for details see the [OSM documentation](https://wiki.openstreetmap.org/wiki/Main_Page)) we assume it is paved and assign it an average travel speed of 60 km/h. Otherwise we assume that the roads are not paved and assign it a travel speed of 40 km/h in the dry season- and only 10km/h in the rainy season. We use our land-cover map as a base-layer to define  the projection system, extent and resolution of the layers to be created. We use the function *acc_vec2fric* to process the vector input-data. 
+
+```{r vec2fric roads}
 # 3.1 roads
-# create a column with travelspeeds for dry and wetseason
-spodf_roads$s_dry<-
-  ifelse(spodf_roads$fclass%in%c("primary","primary_link"),
-         80,
-         40
-         )
-spodf_roads$s_wet<-
-  ifelse(spodf_roads$fclass%in%c("primary","primary_link"),
-         80,
+# create columns with travelspeeds for dry and wetseason
+spodf_roads$s_dry <-
+  ifelse(spodf_roads$fclass %in% c("primary", "primary_link"),
+         60,
+         40)
+  spodf_roads$s_wet <-
+  ifelse(spodf_roads$fclass %in% c("primary", "primary_link"),
+         60,
          10)
 
-# create friction input from roads
-r_roads_dry<-
+# create friction input layers from roads
+r_roads_dry <-
   acc_vec2fric(my_input = spodf_roads,
-               my_baselayer = r_landcover,
-               my_speedfield = "s_dry"
-               )
-r_roads_wet<-
+  my_baselayer = r_landcover,
+  my_speedfield = "s_dry")
+
+r_roads_wet <-
   acc_vec2fric(my_input = spodf_roads,
-               my_baselayer = r_landcover,
-               my_speedfield = "s_wet")
+  my_baselayer = r_landcover,
+  my_speedfield = "s_wet")
 
 # plot the rasterized roads
 plot(r_roads_dry,
-     col=rainbow(2))
+     col=c("orange","black"))
 ```
-We are no going to process the landcover input data 
+
+The next step now is to process the land-cover layer. In order to process the raster input data we use the function *acc_ras2fric*. Our original land-cover data has 11 classes from 0 to 10 (for the original classes see the documentation on the link above). Our assumptions on travel speeds on the different land surfaces are listed in the code below. We provide the land-cover input classes as a vector with the sequence 0,1,2,3,4,5,6,7,8,9,10  and another vector containing the corresponding travel speeds in the same order. 
+
+```{r ras2fric landuse, warning=FALSE,  message=FALSE, results="hide"}
+# reclassification values.
+  # no data will be reclassified to 0 km/h,
+  # tree cover and shrublands and similar to 3 km/h
+  # open landscapes to 10 km/h
+  # urban areas to 30 km/h
+  # water to 20 km/h (boat transportation)
+
+r_landcover_reclass <-
+  acc_ras2fric(
+    my_input = r_landcover,
+    my_baselayer = r_landcover,
+    my_reclass_inputvalues = 0:10,
+    my_reclass_outputvalues = c(0, 3, 3, 10, 10, 3, 10, 10, 30, 2, 20)
+    )
+
+# plot the output raster
+plot(r_landcover_reclass)
+```
+
+Now we will correct the input layers for the effect that slope exerts on them. Our main assumption is that steep slopes reduce travel speed. In order to do so we first need to convert a *Digital Elevation Model (DEM)* into a map that contains information about the slope measure in radians. We use the function *acc_radians* to create this map assuring that it has the same spatial characteristics as all other layers using the land-cover map as a base-layer. Once we have a radians map we can use the function *acc_slopecorr* to correct the input layers.  
+
+```{r acc_radians and acc_slopecorr, warning=FALSE,  message=FALSE, results="hide"}
+# Create radiansmap
+r_radians <-
+  acc_radians(
+    my_input = r_dem,
+    my_baselayer = r_landcover,
+    resampling_method = "near"
+  )
+
+# correct for slope effects
+r_roads_dry_corr <-
+  acc_slopecorr(my_input = r_roads_dry, 
+                my_radians = r_radians)
+
+r_roads_wet_corr <-
+  acc_slopecorr(my_input = r_roads_wet,
+                my_radians = r_radians)
+
+r_landcover_reclass_corr <-
+  acc_slopecorr(my_input = r_landcover_reclass,
+                my_radians = r_radians)
+```
+
+The final step to create the friction map is to use all pre-processed input layers with the function *acc_friction*. We create two distinct friction maps: one for the rainy and one for the dry season. We us an output resolution of 500 meters  to facilitate the creation of the travel times maps, which demands quite some computational resources. The processing time will ultimately not only depend on your hardware specification but more importantly on the extent of your research area and the spatial resolution.   
+
+```{r acc_friction}
+r_friction_dry <-
+  acc_friction(list(r_roads_dry_corr, r_landcover_reclass_corr),
+              my_outputresolution = 500)
+
+r_friction_wet <-
+  acc_friction(list(r_roads_wet_corr, r_landcover_reclass_corr),
+              my_outputresolution = 500)
+
+# plot friction map of dry_season
+plot(r_friction_dry)
+
+```
+
+The friction map contains values that define how much time is needed (in seconds) to cross each grid-cell in horizontal or vertical space. Clearly the roads can be identified in white color to be the cells with less friction. The friction map is the main input data for the travel time map together with the travel destinies (sources) which are provided as a vector input layer. 
+
+# The Travel Time Map
+
+In the last step we will create travel time maps that show the time necessary for any place in Burkina Faso to reach the next city with more than 1 Mio. inhabitants. Once you have the friction maps to your liking you basically can now create travel time maps for any type of source with the code below. 
+
+Note, that we use 3 MB of RAM with the *max_ram* parameter. You can adjust this parameter. It is recommended that you do not use much more than around 50-60 % of currently available RAM to not slow down your computer excessively. Also note that you will have to define here the path to the installed *GRASS* binaries. This path varies depending on your local Operation System and the version of GRASS installed. Helpful information about the location of GRASS on your system can be found here: https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7#GRASS_within_R. Another easy way to find the binaries is to use the function *findGRASS* from the the package *link2GI*. Consider installing it if you are unable to find it manually. If you encounter an error regarding *iconv.dll* or other configuration errors for *GRASS* on Windows, this [CRAN page](https://cran.r-project.org/web/packages/openSTARS/vignettes/Warnings_and_Errors.html) might help. 
+
+```{r acc_accessibility,include=TRUE, warning=FALSE,  message=FALSE, results="hide"}
+# subset the cities for such that have more than 1 Mio inhabitants.
+spodf_sources<-spodf_sources[spodf_sources@data$population >100000, ]
+
+r_accessibility_dry <-
+  acc_accessibility(
+    my_friction = r_friction_dry,
+    my_sources = spodf_sources,
+    knightsmove = T,
+    grassbin = "/usr/lib/grass72", # might change depending on OS. See function documentation.
+    max_ram = 3000
+  )
+
+r_accessibility_wet <-
+  acc_accessibility(
+    my_friction = r_friction_wet,
+    my_sources = spodf_sources,
+    knightsmove = T,
+    grassbin = "/usr/lib/grass72",
+    max_ram = 3000
+  )
+
+# convert output (seconds) to minutes
+r_accessibility_dry <- 
+  r_accessibility_dry / 60
+r_accessibility_wet <- 
+  r_accessibility_wet / 60
+
+# plot both maps
+plot(r_accessibility_dry, breaks=0:1200,col = topo.colors(1200),legend=F)
+legend("topright", legend = c("< 1hr","5 hrs","10 hrs","15 hrs","20 hrs"), fill = topo.colors(5))
+plot(r_accessibility_wet, breaks=0:1200,col = topo.colors(1200),legend=F)
+legend("topright", legend = c("< 1hr","5 hrs","10 hrs","15 hrs","20 hrs"), fill = topo.colors(5))
+
+
+# export rasters
+writeRaster(
+  r_accessibility_dry,
+  filename = "output/r_accessibility_dry.tif",
+  datatype = "INT2U",
+  overwrite = T
+)
+
+writeRaster(
+  r_accessibility_wet,
+  filename = "output/r_accessibility_wet.tif",
+  datatype = "INT2U",
+  overwrite = T
+)
+
+```
+
+We can clearly detect differences in wet- and dry-season accessibility for several regions in Burkina Faso which is mainly the result of different road qualities. These differences might have an important impact on agricultural value chains or socio-economic welfare for people living in remote rural areas. 
+
+# Final Note 
+
+Please note that it may make also sense to export the layers created during processing to inspect the results in a proper GIS software. If you use *OSM* data please note, that the quality varies greatly from country to country. Depending on your research objective you might want to always complement with input data from governmental agencies. We hope you can make use of this package and if you encounter any errors make sure to file a bug report here or ask a question on [Stackoverflow](https://stackoverflow.com/). 
