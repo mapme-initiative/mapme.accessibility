@@ -19,7 +19,7 @@ acc_euclid <-
             grassbin,
             my_metric = "euclidean")
   {
-    print("Setup grass environment and import data")
+    print("Setting up GRASS environment and import data")
     filename_1 <- tempfile(pattern = "gisDbase_")
     loc <-
       initGRASS(

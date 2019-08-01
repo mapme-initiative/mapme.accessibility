@@ -208,6 +208,7 @@ In the last step we will create travel time maps that show the time necessary fo
 Note, that we use 3 MB of RAM with the *max_ram* parameter. You can adjust this parameter. It is recommended that you do not use much more than around 50-60 % of currently available RAM to not slow down your computer excessively. Also note that you will have to define here the path to the installed *GRASS* binaries. This path varies depending on your local Operation System and the version of GRASS installed. Helpful information about the location of GRASS on your system can be found here: https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7#GRASS_within_R. Another easy way to find the binaries is to use the function *findGRASS* from the the package *link2GI*. Consider installing it if you are unable to find it manually. If you encounter an error regarding *iconv.dll* or other configuration errors for *GRASS* on Windows, this [CRAN page](https://cran.r-project.org/web/packages/openSTARS/vignettes/Warnings_and_Errors.html) might help. 
 
 ```{r acc_accessibility,include=TRUE, warning=FALSE,  message=FALSE, results="hide"}
+
 # subset the cities for such that have more than 1 Mio inhabitants.
 spodf_sources<-spodf_sources[spodf_sources@data$population >100000, ]
 
@@ -263,4 +264,4 @@ We can clearly detect differences in wet- and dry-season accessibility for sever
 
 # Final Note 
 
-Please note that it may make also sense to export the layers created during processing to inspect the results in a proper GIS software. If you use *OSM* data please note, that the quality varies greatly from country to country. Depending on your research objective you might want to always complement with input data from governmental agencies. We hope you can make use of this package and if you encounter any errors make sure to file a bug report here or ask a question on [Stackoverflow](https://stackoverflow.com/). 
+Please note that it may make also sense to export the layers created during processing to inspect the results in a proper GIS software. If you use *OSM* data please note, that the quality varies greatly from country to country. Depending on your research objective you might want to always complement it with data from governmental agencies. Also it makes sense to include additional infrastructure layers such as waterways or railroads which we did not do in this example for the sake of simplicity. We hope that you can make use of this package and if you encounter any errors make sure to file a bug report here or ask a question on [Stackoverflow](https://stackoverflow.com/). 

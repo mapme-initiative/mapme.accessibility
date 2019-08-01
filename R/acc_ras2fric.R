@@ -59,7 +59,6 @@ acc_ras2fric <-
     }
     # check  wheter the data should be reclassified
     if (!is.null(my_reclass_inputvalues)) {
-      print("You provided a reclassification matrix. Starting to reclassify the raster")
       # reclassify
       filename_1<-tempfile(pattern = "raster_",fileext = ".tif")
       raster::reclassify(
@@ -72,7 +71,6 @@ acc_ras2fric <-
       # rescale the raster if resolution and or extent differs
       if (raster::res(my_input) != raster::res(my_baselayer) ||
           raster::extent(my_input) != raster::extent(my_baselayer)) {
-        print("Starting to homogenize raster with baselayer")
         filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
         gdalUtils::gdalwarp(
           srcfile = filename_1,
@@ -94,10 +92,6 @@ acc_ras2fric <-
       # without reclassification matrix, only rescale the raster if resolution and extent differ
       if (res(my_input) != res(my_baselayer) ||
           raster::extent(my_input) != raster::extent(my_baselayer)) {
-
-        # raster::writeRaster(my_input,
-        #             paste(tempdir(), "/tempreclassraster.tif", sep = ""))
-        print("Starting to homogenize the raster with baselayer")
         filename_3<-tempfile(pattern = "raster_",fileext = ".tif")
         gdalUtils::gdalwarp(
           srcfile = my_input@file@name,

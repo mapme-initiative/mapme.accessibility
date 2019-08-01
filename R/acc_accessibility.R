@@ -23,7 +23,7 @@ acc_accessibility <-
            grassbin,
            max_ram = 3000) {
     # (1) Import data
-    print("Setting up grass environment and import data")
+    print("Setting up GRASS environment and importing data")
     # Create a new GrassDB, set location and mapset
     filename_1 <- tempfile(pattern = "gisDbase_")
     loc <- initGRASS(
@@ -106,7 +106,7 @@ acc_accessibility <-
         )
       )
     }
-    print(paste("Stopped to calculate accessiblity map at:", Sys.time()))
+    print(paste("Stopped calculating accessiblity map at:", Sys.time()))
     # Export raster as tif
     filename_4 <- tempfile(pattern = "raster_", fileext = ".tif")
     execGRASS(

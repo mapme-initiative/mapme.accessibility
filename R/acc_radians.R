@@ -26,7 +26,6 @@ acc_radians <- function(my_input,
          call. = F)
   }
   # create slop map
-  print("Create slope map (raster)")
   filename_1<-tempfile(pattern = "raster_",fileext = ".tif")
   tmp_radians <-
     terrain(
@@ -40,7 +39,6 @@ acc_radians <- function(my_input,
   if (raster::res(my_input) != raster::res(my_baselayer) ||
       raster::extent(my_input) != raster::extent(my_baselayer)||
       sp::proj4string(my_input) != sp::proj4string(my_baselayer)) {
-    print("Homogenize DEM layer with baselayer (gdal)")
     filename_2<-tempfile(pattern = "raster_",fileext = ".tif")
     gdalUtils::gdalwarp(
       srcfile = filename_1,
@@ -55,6 +53,5 @@ acc_radians <- function(my_input,
     )
     tmp_radians<-raster(filename_2)
   }
-  print("Finished processing")
   return(tmp_radians)
 }
