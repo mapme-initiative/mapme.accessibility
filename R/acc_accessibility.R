@@ -49,7 +49,7 @@ acc_accessibility <-
     execGRASS("g.region",
               parameters = list(raster = "friction"))
     # delete all attribute columns from the sources (reduces error risk in grass)
-    filename_3@data<-data.frame(a=1:length(filename_3))
+    my_sources@data<-data.frame(a=1:length(my_sources))
     # save input layer and reproject sources crs to match raster crs (if necessary)
     filename_3 <-
       gsub("/", "", tempfile(pattern = "tempvector", tmpdir = ""))
