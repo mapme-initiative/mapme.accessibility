@@ -5,7 +5,7 @@ knit: (function(input_file, encoding) {
   rmarkdown::render(input_file,
  encoding=encoding,
  output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
-author: "s5joschi"
+author: "Johannes Schielein"
 date: "July 18, 2019"
 output: html_document
 ---
@@ -28,7 +28,7 @@ The easiest way to install the *AccessibilityMaps* package is using the *devtool
 ```{r installation, message=FALSE, warning=FALSE}
 
 library("devtools")
-install_github("s5joschi/accessibility")
+install_github("mapme-initiative/accessibility")
 # once installed just activate the package with 
 library(AccessibilityMaps)
 ```
@@ -264,4 +264,4 @@ We can clearly detect differences in wet- and dry-season accessibility for sever
 
 # Final Note 
 
-Please note that it may make also sense to export the layers created during processing to inspect the results in a proper GIS software. If you use *OSM* data please note, that the quality varies greatly from country to country. Depending on your research objective you might want to always complement it with data from governmental agencies. Also it makes sense to include additional infrastructure layers such as waterways or railroads which we did not do in this example for the sake of simplicity. We hope that you can make use of this package and if you encounter any errors make sure to file a bug report here or ask a question on [Stackoverflow](https://stackoverflow.com/). 
+Please note that it may make also sense to export the layers created during processing to inspect the results in a proper GIS software. If you use *OSM* data please note, that the quality varies greatly from country to country. Depending on your research objective you might want to always complement it with data from governmental agencies. Also it makes sense to include additional infrastructure layers such as waterways or railroads which we did not do in this example for the sake of simplicity. We hope that you can make use of this package and if you encounter any errors make sure to file a bug report [here](https://github.com/mapme-initiative/accessibility/issues). or ask a question on [Stackoverflow](https://stackoverflow.com/). 
