@@ -28,7 +28,7 @@ The easiest way to install the *AccessibilityMaps* package is using the *devtool
 ```{r installation, message=FALSE, warning=FALSE}
 
 library("devtools")
-install_github("mapme-initiative/accessibility")
+install_github("mapme-initiative/mapme.accessibility")
 # once installed just activate the package with 
 library(AccessibilityMaps)
 ```
